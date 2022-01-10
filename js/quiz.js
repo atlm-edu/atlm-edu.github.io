@@ -8,16 +8,18 @@ const result_box = document.querySelector(".result_box");
 const option_list = document.querySelector(".option_list");
 const time_line = document.querySelector("header .time_line");
 const timeText = document.querySelector(".timer .time_left_txt");
-const timeCount = document.querySelector(".timer .timer_sec");
+const timeCount = document.querySelector(".timer .timer_sec"); 
 
 // if startQuiz button clicked
 start_btn.onclick = ()=>{
     info_box.classList.add("activeInfo"); //show info box
+	start_btn.classList.add("active"); //show info box
 }
 
 // if exitQuiz button clicked
 exit_btn.onclick = ()=>{
     info_box.classList.remove("activeInfo"); //hide info box
+	start_btn.classList.remove("active");
 }
 
 // if continueQuiz button clicked
@@ -26,11 +28,11 @@ continue_btn.onclick = ()=>{
     quiz_box.classList.add("activeQuiz"); //show quiz box
     showQuetions(0); //calling showQestions function
     queCounter(1); //passing 1 parameter to queCounter
-    startTimer(20); //calling startTimer function
+    startTimer(15); //calling startTimer function
     startTimerLine(0); //calling startTimerLine function
 }
 
-let timeValue =  20;
+let timeValue =  15;
 let que_count = 0;
 let que_numb = 1;
 let userScore = 0;
@@ -45,7 +47,7 @@ const quit_quiz = result_box.querySelector(".buttons .quit");
 restart_quiz.onclick = ()=>{
     quiz_box.classList.add("activeQuiz"); //show quiz box
     result_box.classList.remove("activeResult"); //hide result box
-    timeValue = 20; 
+    timeValue = 15; 
     que_count = 0;
     que_numb = 1;
     userScore = 0;
@@ -56,7 +58,7 @@ restart_quiz.onclick = ()=>{
     clearInterval(counterLine); //clear counterLine
     startTimer(timeValue); //calling startTimer function
     startTimerLine(widthValue); //calling startTimerLine function
-    timeText.textContent = "Time Left"; //change the text of timeText to Time Left
+    timeText.textContent = "Sisa waktu"; //change the text of timeText to Time Left
     next_btn.classList.remove("show"); //hide the next button
 }
 
@@ -79,7 +81,7 @@ next_btn.onclick = ()=>{
         clearInterval(counterLine); //clear counterLine
         startTimer(timeValue); //calling startTimer function
         startTimerLine(widthValue); //calling startTimerLine function
-        timeText.textContent = "Time Left"; //change the timeText to Time Left
+        timeText.textContent = "Sisa waktu"; //change the timeText to Time Left
         next_btn.classList.remove("show"); //hide the next button
     }else{
         clearInterval(counter); //clear counter
@@ -152,15 +154,15 @@ function showResult(){
     const scoreText = result_box.querySelector(".score_text");
     if (userScore > 3){ // if user scored more than 3
         //creating a new span tag and passing the user score number and total question number
-        let scoreTag = '<span>dan selamat! 🎉, Anda sudah memahami materi dengan baik karena menjawab '+ userScore +' soal, dari '+ questions.length +' soal</span>';
+        let scoreTag = '<span>dan selamat! 🎉, Anda mendapat '+ userScore +' point dari '+ questions.length +' pertanyaan kuis.</span>';
         scoreText.innerHTML = scoreTag;  //adding new span tag inside score_Text
     }
     else if(userScore > 1){ // if user scored more than 1
-        let scoreTag = '<span>dan pahami lagi materi 😎, Anda menjawab benar '+ userScore +' soal, dari '+ questions.length +' soal</span>';
+        let scoreTag = '<span>dan lumayan 😎, Anda mendapat '+ userScore +' point dari '+ questions.length +' pertanyaan kuis.</span>';
         scoreText.innerHTML = scoreTag;
     }
     else{ // if user scored less than 1
-        let scoreTag = '<span>dan maaf 😐, Anda hanya dapat '+ userScore +' soal, dari '+ questions.length +' soal</span>';
+        let scoreTag = '<span>dan maaf 😐, Anda hanya mendapat '+ userScore +' point dari '+ questions.length +' pertanyaan kuis.</span>';
         scoreText.innerHTML = scoreTag;
     }
 }
@@ -176,7 +178,7 @@ function startTimer(time){
         }
         if(time < 0){ //if timer is less than 0
             clearInterval(counter); //clear counter
-            timeText.textContent = "Sisa Waktu"; //change the time text to time off
+            timeText.textContent = "Waktu habis"; //change the time text to time off
             const allOptions = option_list.children.length; //getting all option items
             let correcAns = questions[que_count].answer; //getting correct answer from array
             for(i=0; i < allOptions; i++){
@@ -207,6 +209,6 @@ function startTimerLine(time){
 
 function queCounter(index){
     //creating a new span tag and passing the question number and total question
-    let totalQueCounTag = '<span><p>'+ index +'</p> dari <p>'+ questions.length +'</p> Pertanyaan</span>';
+    let totalQueCounTag = '<span><p>'+ index +'</p> dari <p>'+ questions.length +'</p> pertanyaan</span>';
     bottom_ques_counter.innerHTML = totalQueCounTag;  //adding new span tag inside bottom_ques_counter
 }
