@@ -111,8 +111,8 @@ function showQuetions(index){
     }
 }
 // creating the new div tags which for icons
-let tickIconTag = '<div class="icon tick"><i class="fas glyphicon glyphicon-ok"></i></div>';
-let crossIconTag = '<div class="icon cross"><i class="fas glyphicon glyphicon-remove"></i></div>';
+let tickIconTag = '<div class="icon tick"><span class="glyphicon glyphicon-ok"></span></div>';
+let crossIconTag = '<div class="icon cross"><span class="glyphicon glyphicon-remove"></span></div>';
 
 //if user clicked on option
 function optionSelected(answer){
