@@ -73,7 +73,10 @@ document.write("<div class='post-topik-home topik-"+[i]+"' ><div class='topik-it
 if (showthumbnail == 'on'){
 document.write("<div class='topik-item-image'><a  href=" +ListUrl+ "><img src=" +ListImage+ "/></a></div>");
 }
-document.write("<h3><a class='topik-title' href=" +ListUrl+ ">" + ListTitle+ "</a></h3>");
+if (showdate == 'on'){
+document.write("<span class='topik-date'>" + M +" "+ D +", "+ Y + "</span>");
+}
+document.write("<h4><a class='topik-title' href=" +ListUrl+ ">" + ListTitle+ "</a></h4>");
 if (showcontent == 'on'){
 document.write("<div class='topik-content'>" +ListContent+ "...</div> ");
 }
@@ -88,9 +91,6 @@ document.write("<span class='topik-author'><img class='topik-authorpic' src='"+A
 }
 if (showcomments == 'on'){
 document.write("<span class='topik-comments'>" +ListComments+ "</span> ");
-}
-if (showdate == 'on'){
-document.write("<span class='topik-date'>" + M +" "+ D +", "+ Y + "</span>");
 }
 document.write("</div></div>");
 
