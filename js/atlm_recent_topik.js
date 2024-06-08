@@ -1,101 +1,157 @@
-function atlmlabelfilter(json) {
-document.write('<div class="atlm-filter-topik">');
-for (var i = 0; i < ListCount; i++)
-{
-var listing= ListImage = ListUrl = ListTitle = ListImage = ListContent = ListConten = ListAuthor = ListTag = ListDate = ListUpdate = ListComments = thumbUrl = TotalPosts = sk = AuthorPic= ListMonth = Y = D = M = m = YY = DD = MM = mm = TT =  "";
-if (json.feed.entry[i].category != null)
-{
-for (var k = 0; k < json.feed.entry[i].category.length; k++) {
-ListTag += "<a href='"+ListBlogLink+"/search/label/"+json.feed.entry[i].category[k].term+"'>"+json.feed.entry[i].category[k].term+"</a>";
-if(k < json.feed.entry[i].category.length-1)
-{ ListTag += " ";}
-}}
-for (var j = 0; j < json.feed.entry[i].link.length; j++) {
-      if (json.feed.entry[i].link[j].rel == 'alternate') {
-        break;
-      }
-    }
-ListUrl= "'" + json.feed.entry[i].link[j].href + "'";
-TotalPosts = json.feed.openSearch$totalResults.$t;
-if (json.feed.entry[i].title!= null)
-{
-ListTitle= json.feed.entry[i].title.$t.substr(0, TitleCount);
-}
-if (json.feed.entry[i].thr$total)
-{
-ListComments= "<a href='"+json.feed.entry[i].link[j].href+"#comment-form'>"+json.feed.entry[i].thr$total.$t+"</a>";
-}
-ListAuthor= json.feed.entry[i].author[0].name.$t.split(" ");
-ListAuthor=ListAuthor.slice(0, 1).join(" ");
-AuthorPic = json.feed.entry[i].author[0].gd$image.src;
-ListConten = json.feed.entry[i].content.$t;
-ListContent= ListConten.replace(/(<([^>]+)>)/ig,"").substring(0, ChrCount);
-ListMonth= ["Januari", "Febuari", "Maret", "April", "May", "Juni", "Juli", "Augustus", "September", "October", "November", "December"];
-ListDate= json.feed.entry[i].published.$t.substring(0,10);
+        var ListBlogLink = "https://ahli-teknologi-laboratorium-medik.blogspot.com/";
+        var ListCount = 4;
+        var ChrCount = 45;
+        var TitleCount = 100;
+        var ImageSize = 140;
+        var showcomments = "off";
+        var showdate = "on";
+        var showauthor = "off";
+        var showthumbnail = "off";
+        var showlabel = "off";
+        var showcontent = "off";
+        var showTotal = "off";
+        var showread = "on"; // New variable for topik-read
 
-                         Y = ListDate.substring(0, 4);
-                        m = ListDate.substring(5, 7);
-                         D = ListDate.substring(8, 10);
-                         M = ListMonth[parseInt(m - 1)];                       
+        function atlmlabelfilter(json, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear existing content
 
-ListUpdate= json.feed.entry[i].updated.$t.substring(0, 16);
+            json.feed.entry.slice(0, ListCount).forEach((entry, i) => {
+                let ListTag = '', ListUrl = '', ListTitle = '', ListComments = '', ListAuthor = '', AuthorPic = '', ListContent = '', ListDate = '', ListUpdate = '', ListImage = '';
 
-                         YY = ListUpdate.substring(0, 4);
-                        mm = ListUpdate.substring(5, 7);
-                         DD = ListUpdate.substring(8, 10);
-                         TT = ListUpdate.substring(11, 16);
-                         MM = ListMonth[parseInt(mm - 1)];   
+                if (entry.category) {
+                    entry.category.forEach((cat, k) => {
+                        ListTag += `<a href='${ListBlogLink}/search/label/${cat.term}'>${cat.term}</a>`;
+                        if (k < entry.category.length - 1) ListTag += ' ';
+                    });
+                }
 
+                const alternateLink = entry.link.find(link => link.rel === 'alternate');
+                ListUrl = alternateLink.href;
 
-if (json.feed.entry[i].content.$t.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/) != null)
-{
-    var youtube_id = json.feed.entry[i].content.$t.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/).pop();
-    if (youtube_id.length == 11) {
-        var ListImage = "'//img.youtube.com/vi/"+youtube_id+"/0.jpg'";
+                if (entry.title) ListTitle = entry.title.$t.substr(0, TitleCount);
+                if (entry.thr$total) ListComments = `<a href='${alternateLink.href}#comment-form'>${entry.thr$total.$t}</a>`;
+
+                ListAuthor = entry.author[0].name.$t.split(" ")[0];
+                AuthorPic = entry.author[0].gd$image.src;
+
+                ListContent = entry.content.$t.replace(/(<([^>]+)>)/ig, "").substring(0, ChrCount);
+
+                const ListMonth = ["Januari", "Febuari", "Maret", "April", "May", "Juni", "Juli", "Augustus", "September", "October", "November", "December"];
+                ListDate = entry.published.$t.substring(0, 10);
+                const [Y, m, D] = [ListDate.substring(0, 4), ListDate.substring(5, 7), ListDate.substring(8, 10)];
+                const M = ListMonth[parseInt(m) - 1];
+
+                ListUpdate = entry.updated.$t.substring(0, 16);
+                const [YY, mm, DD, TT] = [ListUpdate.substring(0, 4), ListUpdate.substring(5, 7), ListUpdate.substring(8, 10), ListUpdate.substring(11, 16)];
+                const MM = ListMonth[parseInt(mm) - 1];
+
+                const youtubeMatch = entry.content.$t.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/);
+                if (youtubeMatch && youtubeMatch[2].length === 11) {
+                    ListImage = `//img.youtube.com/vi/${youtubeMatch[2]}/0.jpg`;
+                } else if (entry.media$thumbnail) {
+                    const thumbUrl = entry.media$thumbnail.url.replace("/s72-c/", `/s${ImageSize}-c/`);
+                    ListImage = thumbUrl.replace("?imgmax=800", "");
+                } else {
+                    const imgMatch = entry.content.$t.match(/src=(.+?[\.jpg|\.gif|\.png]")/);
+                    if (imgMatch) {
+                        ListImage = imgMatch[1];
+                    } else {
+                        ListImage = 'https://3.bp.blogspot.com/-d7epv7xdukI/XELxKqnvlYI/AAAAAAAAAdI/qkPKvbRx4S4xN58hSun4QLBIiJvDlUI0wCLcBGAs/s120-c/no-image.jpg';
+                    }
+                }
+
+                const postDiv = document.createElement('div');
+                postDiv.className = `post-topik-home topik-${i}`;
+
+                const itemBody = document.createElement('div');
+                itemBody.className = 'topik-item-body';
+
+                if (showthumbnail === 'on') {
+                    const imageDiv = document.createElement('div');
+                    imageDiv.className = 'topik-item-image';
+                    imageDiv.innerHTML = `<a href=${ListUrl}><img src=${ListImage} /></a>`;
+                    itemBody.appendChild(imageDiv);
+                }
+
+                if (showdate === 'on') {
+                    const dateSpan = document.createElement('span');
+                    dateSpan.className = 'topik-date';
+                    dateSpan.textContent = `${D} ${M} ${Y}`;
+                    itemBody.appendChild(dateSpan);
+                }
+
+                const title = document.createElement('h4');
+                title.innerHTML = `<a class='topik-title' href=${ListUrl}>${ListTitle}</a>`;
+                itemBody.appendChild(title);
+
+                if (showcontent === 'on') {
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'topik-content';
+                    contentDiv.textContent = `${ListContent}...`;
+                    itemBody.appendChild(contentDiv);
+                }
+
+                postDiv.appendChild(itemBody);
+
+                const itemFooter = document.createElement('div');
+                itemFooter.className = 'topik-item-footer';
+
+                if (showread === 'on') {
+                    const readDiv = document.createElement('div');
+                    readDiv.className = 'topik-read';
+                    readDiv.innerHTML = `<a class='topik-read-link' href=${ListUrl}>Baca</a>`;
+                    itemFooter.appendChild(readDiv);
+                }
+
+                if (showlabel === 'on') {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.className = 'topik-tag';
+                    tagSpan.innerHTML = ListTag;
+                    itemFooter.appendChild(tagSpan);
+                }
+
+                if (showauthor === 'on') {
+                    const authorSpan = document.createElement('span');
+                    authorSpan.className = 'topik-author';
+                    authorSpan.innerHTML = `<img class='topik-authorpic' src='${AuthorPic}'/>${ListAuthor}`;
+                    itemFooter.appendChild(authorSpan);
+                }
+
+                if (showcomments === 'on') {
+                    const commentsSpan = document.createElement('span');
+                    commentsSpan.className = 'topik-comments';
+                    commentsSpan.innerHTML = ListComments;
+                    itemFooter.appendChild(commentsSpan);
+                }
+
+                postDiv.appendChild(itemFooter);
+                container.appendChild(postDiv);
+            });
+
+            if (showTotal === 'on') {
+                const totalDiv = document.createElement('div');
+                totalDiv.className = 'topik-total';
+                totalDiv.innerHTML = `<span><a href='${ListBlogLink}/search/label/${ListLabel}'>Lihat semua</a></span>`;
+                container.appendChild(totalDiv);
+            }
         }
-}
-else if (json.feed.entry[i].media$thumbnail)
-{
-thumbUrl = json.feed.entry[i].media$thumbnail.url;
-sk= thumbUrl.replace("/s72-c/","/s"+ImageSize+"-c/");
-ListImage= "'" + sk.replace("?imgmax=800","") + "'";
-}
-else if (json.feed.entry[i].content.$t.match(/src=(.+?[\.jpg|\.gif|\.png]")/) != null)
-{
-// Support For 3rd Party Images
-ListImage =  json.feed.entry[i].content.$t.match(/src=(.+?[\.jpg|\.gif|\.png]")/)[1];
-}
-else
-{
-ListImage= "'https://3.bp.blogspot.com/-d7epv7xdukI/XELxKqnvlYI/AAAAAAAAAdI/qkPKvbRx4S4xN58hSun4QLBIiJvDlUI0wCLcBGAs/s120-c/no-image.jpg'";
-}
-document.write("<div class='post-topik-home topik-"+[i]+"' ><div class='topik-item-body'>");
-if (showthumbnail == 'on'){
-document.write("<div class='topik-item-image'><a  href=" +ListUrl+ "><img src=" +ListImage+ "/></a></div>");
-}
-if (showdate == 'on'){
-document.write("<span class='topik-date'>" + D +" "+ M +" "+ Y + "</span>");
-}
-document.write("<h4><a class='topik-title' href=" +ListUrl+ ">" + ListTitle+ "</a></h4>");
-if (showcontent == 'on'){
-document.write("<div class='topik-content'>" +ListContent+ "...</div> ");
-}
-document.write("</div>");
-document.write("<div class='topik-item-footer'>");
-document.write("<div class='topik-read'><a class='topik-read-link' href=" +ListUrl+ ">Baca</a></div>");
-if (showlabel == 'on'){
-document.write("<span class='topik-tag'>" +ListTag+ "</span>");
-}
-if (showauthor == 'on'){
-document.write("<span class='topik-author'><img class='topik-authorpic' src='"+AuthorPic+"'/>" +ListAuthor+ "</span>");
-}
-if (showcomments == 'on'){
-document.write("<span class='topik-comments'>" +ListComments+ "</span> ");
-}
-document.write("</div></div>");
 
-}if (showTotal == 'on'){
-document.write("<div class='topik-total'><span><a href='"+ListBlogLink+"/search/label/"+ListLabel+"'>Lihat semua</a></span></div>");
-}
-document.write("</div>");
-}
+        // Load the JSON feed for "Pemeriksaan"
+        const pemeriksaanScript = document.createElement('script');
+        pemeriksaanScript.src = "https://www.atlm-edu.id/feeds/posts/default/-/Pemeriksaan?orderby=published&alt=json-in-script&callback=pemeriksaanCallback";
+        document.body.appendChild(pemeriksaanScript);
+
+        // Load the JSON feed for "Pengetahuan"
+        const pengetahuanScript = document.createElement('script');
+        pengetahuanScript.src = "https://www.atlm-edu.id/feeds/posts/default/-/Pengetahuan?orderby=published&alt=json-in-script&callback=pengetahuanCallback";
+        document.body.appendChild(pengetahuanScript);
+
+        // Define the callback functions
+        function pemeriksaanCallback(json) {
+            atlmlabelfilter(json, 'pemeriksaan-container');
+        }
+
+        function pengetahuanCallback(json) {
+            atlmlabelfilter(json, 'pengetahuan-container');
+        }
