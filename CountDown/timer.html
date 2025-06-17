@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Looping Countdown Timer</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for minimalist design -->
+  <style>
+    /* General Body and Container Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .timer {
+      font-size: 5rem;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #333;
+      Text-align: center;
+    }
+
+    .countdown-bar {
+      height: 10px;
+      background-color: #f0f0f0;
+      width: 100%;
+      border-radius: 5px;
+      margin-top: 30px;
+    }
+
+    .countdown-progress {
+      height: 100%;
+      background-color: #4CAF50;
+      border-radius: 5px;
+      width: 100%;  /* Start at 100% */
+      transition: width 1s linear; /* Smooth animation */
+    }
+
+    .settings-container {
+      margin-top: 20px;
+    }
+
+    .form-control {
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .btn {
+      border-radius: 50px;
+      padding: 10px 25px;
+      width: 100%;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .btn-start {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-start:hover {
+      background-color: #218838;
+    }
+
+    .btn-reset {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-reset:hover {
+      background-color: #c82333;
+    }
+
+    .select-style {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      background-color: #f0f0f0;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Media Query for Mobile */
+    @media (max-width: 576px) {
+      .timer {
+        font-size: 2rem;
+      }
+      .btn {
+        font-size: 0.9rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Footer Styling */
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 40px;
+      padding-top: 20px;
+    }
+
+    footer a {
+      color: #28a745;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Looping Countdown Timer</h1>
+  
+  <!-- Main Time Display -->
+  <div id="timer" class="timer">00:00:00:00</div>
+
+  <!-- Countdown Bar -->
+  <div class="countdown-bar">
+    <div id="countdownProgress" class="countdown-progress"></div>
+  </div>
+
+  <!-- Start/Stop and Reset Buttons -->
+  <button id="startBtn" class="btn btn-start">Start</button>
+  <button id="resetBtn" class="btn btn-reset">Reset</button>
+
+  <!-- Settings for Time -->
+  <div class="settings-container">
+    <label for="timeInput">Set Time (hh:mm:ss:ms):</label>
+    <input type="text" id="timeInput" class="form-control" value="00:00:10:00" placeholder="e.g. 00:00:10:00">
+  </div>
+
+  <div class="settings-container">
+    <label for="loopCount">Loop Count (number of students):</label>
+    <input type="number" id="loopCount" class="form-control" value="1" min="1">
+  </div>
+
+  <!-- Sound Selection -->
+  <div class="settings-container">
+    <label for="soundSelect">Select Bell Sound:</label>
+    <select id="soundSelect" class="select-style">
+      <option value="https://atlm-edu.github.io/Music/bell-323942.mp3">Bell Sound 1</option>
+      <option value="https://atlm-edu.github.io/Music/bell-ring-199839.mp3">Bell Ring Sound</option>
+      <option value="https://atlm-edu.github.io/Music/bellding-254774.mp3" selected>Bell Sound (Default)</option>
+      <option value="https://atlm-edu.github.io/Music/creepy-bell-fx-246592.mp3">Creepy Bell Sound</option>
+      <option value="https://atlm-edu.github.io/Music/school-bell-199584.mp3">School Bell 1</option>
+      <option value="https://atlm-edu.github.io/Music/school-bell-310293.mp3">School Bell 2</option>
+    </select>
+  </div>
+</div>
+
+<!-- Footer with Copyright Notice -->
+<footer>
+  <p>&copy; 2025 <a href="https://www.sodikin.com" target="_blank">Sodikin Kurniawan</a>. All rights reserved.</p>
+</footer>
+
+<!-- Bootstrap JS and required Popper -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<!-- Audio for countdown alarm -->
+<audio id="alarmSound" src="https://atlm-edu.github.io/Music/bellding-254774.mp3" preload="auto"></audio>
+
+<script>
+  let countdownTimer;
+  let isRunning = false;
+  let totalLoops = 1;
+  let currentLoop = 0;
+  let timeLeft = 10;  // Default to 10 seconds
+  let totalTime = 10; // Store original time
+  const alarmSound = document.getElementById("alarmSound");
+
+  // Convert time to seconds
+  function convertToSeconds(timeString) {
+    const parts = timeString.split(':');
+    const hours = parseInt(parts[0], 10);
+    const minutes = parseInt(parts[1], 10);
+    const seconds = parseInt(parts[2], 10);
+    const milliseconds = parseInt(parts[3], 10);
+
+    return (hours * 3600 + minutes * 60 + seconds) + milliseconds / 100;
+  }
+
+  // Format time in hh:mm:ss:ms
+  function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    const milliseconds = Math.floor((seconds - Math.floor(seconds)) * 100);
+    
+    return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}:${milliseconds < 10 ? '0' : ''}${milliseconds}`;
+  }
+
+  // Update the progress bar (from 100% to 0%)
+  function updateProgressBar() {
+    const progress = (timeLeft / totalTime) * 100;
+    document.getElementById("countdownProgress").style.width = progress + '%';
+  }
+
+  // Start the countdown
+  function startTimer() {
+    if (isRunning) return;
+
+    isRunning = true;
+    currentLoop = 0;
+    totalLoops = parseInt(document.getElementById("loopCount").value);
+    const timeString = document.getElementById("timeInput").value;
+    totalTime = convertToSeconds(timeString);
+    timeLeft = totalTime;
+
+    // Get selected sound
+    const selectedSound = document.getElementById("soundSelect").value;
+    alarmSound.src = selectedSound;
+
+    countdownTimer = setInterval(() => {
+      timeLeft -= 0.1;  // Decrease in 100 ms increments for more precision
+
+      document.getElementById("timer").innerText = formatTime(timeLeft);
+      updateProgressBar();
+
+      if (timeLeft <= 0) {
+        currentLoop++;
+
+        // Play the bell sound 3 times
+        alarmSound.play();
+        alarmSound.play();
+        alarmSound.play();
+
+        if (currentLoop < totalLoops) {
+          // Reset timer for the next loop
+          timeLeft = totalTime;
+          document.getElementById("countdownProgress").style.width = '100%'; // Reset progress bar to 100%
+        } else {
+          clearInterval(countdownTimer);
+          isRunning = false;
+          document.getElementById("timer").innerText = formatTime(0);
+        }
+      }
+    }, 100);  // Every 100 ms (for higher precision)
+  }
+
+  // Reset the timer
+  function resetTimer() {
+    clearInterval(countdownTimer);
+    isRunning = false;
+    const timeString = document.getElementById("timeInput").value;
+    totalTime = convertToSeconds(timeString);
+    timeLeft = totalTime;
+    document.getElementById("timer").innerText = formatTime(timeLeft);
+    document.getElementById("countdownProgress").style.width = '100%';
+  }
+
+  // Event listeners for the buttons
+  document.getElementById("startBtn").addEventListener("click", startTimer);
+  document.getElementById("resetBtn").addEventListener("click", resetTimer);
+</script>
+
+</body>
+</html>
