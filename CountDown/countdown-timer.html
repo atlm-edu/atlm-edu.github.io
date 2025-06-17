@@ -701,10 +701,9 @@
     }, 300);
   }
 
-  function playBellSound() {
+  // FIXED: Sound bug corrected - pass isLastLoop parameter
+  function playBellSound(isLastLoop = false) {
     if (isMuted) return;
-
-    const isLastLoop = (currentLoop + 1) >= totalLoops;
 
     if (isLastLoop) {
       // Play 3 times sequentially for the last loop with visual flash
@@ -712,7 +711,7 @@
       function playRepeat() {
         if (playCount >= 3) return;
         alarmSound.currentTime = 0;
-        alarmSound.play();
+        alarmSound.play().catch(e => console.log('Audio play failed:', e));
         flashScreen();
         playCount++;
         // Schedule next play after the current sound ends or 700ms if unable to detect
@@ -723,7 +722,7 @@
     } else {
       // Play once for other loops
       alarmSound.currentTime = 0;
-      alarmSound.play();
+      alarmSound.play().catch(e => console.log('Audio play failed:', e));
     }
   }
 
@@ -769,15 +768,22 @@
       updateProgressBar();
 
       if (timeLeft <= 0) {
-        playBellSound();
+        // FIXED: Determine if this will be the last loop BEFORE incrementing
+        const willBeLastLoop = (currentLoop + 1) >= totalLoops;
 
+        // Play sound with correct loop information
+        playBellSound(willBeLastLoop);
+
+        // Now increment the loop counter
         currentLoop++;
         updateLoopProgress();
 
         if (currentLoop < totalLoops) {
+          // Reset for next loop
           timeLeft = totalTime;
           document.getElementById("countdownProgress").style.width = '100%';
         } else {
+          // All loops completed
           finishTimer();
         }
       }
@@ -926,15 +932,17 @@
       muted: isMuted
     };
 
-    localStorage.setItem('timerSettings', JSON.stringify(settings));
+    // Using in-memory storage instead of localStorage for Claude.ai compatibility
+    window.timerSettings = settings;
   }
 
   function loadSettings() {
-    const saved = localStorage.getItem('timerSettings');
+    // Using in-memory storage instead of localStorage for Claude.ai compatibility
+    const saved = window.timerSettings;
     if (!saved) return;
 
     try {
-      const settings = JSON.parse(saved);
+      const settings = saved;
 
       if (settings.theme === 'dark') {
         document.body.setAttribute('data-theme', 'dark');
