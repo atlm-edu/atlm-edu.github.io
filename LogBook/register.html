@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Laboratory Research Logbook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+        .form-signup {
+            width: 100%;
+            max-width: 450px;
+            padding: 15px;
+            margin: auto;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #0061f2 0%, #00c6f9 100%);
+            color: white;
+            text-align: center;
+            border-radius: 1rem 1rem 0 0 !important;
+            padding: 2rem 1rem;
+        }
+        .logo-img {
+            height: 50px;
+            margin-bottom: 1rem;
+        }
+        .social-signup-btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .social-signup-btn i {
+            margin-right: 10px;
+        }
+        .password-requirements {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .password-requirements ul {
+            padding-left: 1.5rem;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <main class="form-signup">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-journal-text logo-img d-block mx-auto"></i>
+                <h4 class="mb-0">Laboratory Research Logbook</h4>
+            </div>
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">Create Account</h2>
+                <form id="signupForm">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" required>
+                                <label for="floatingFirstName">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" required>
+                                <label for="floatingLastName">Last Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
+                        <label for="floatingEmail">Email address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="floatingRole" required>
+                            <option value="" selected disabled>Select your role</option>
+                            <option value="researcher">Researcher</option>
+                            <option value="lab_tech">Lab Technician</option>
+                            <option value="professor">Professor</option>
+                            <option value="student">Student</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <label for="floatingRole">Your Role</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password" required>
+                        <label for="floatingConfirmPassword">Confirm Password</label>
+                    </div>
+                    
+                    <div class="password-requirements mb-3">
+                        <p class="mb-1">Password must contain:</p>
+                        <ul>
+                            <li>At least 8 characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one lowercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one special character</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Account</button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-dark social-signup-btn" type="button">
+                        <i class="bi bi-google"></i> Sign up with Google
+                    </button>
+                    <button class="btn btn-outline-dark social-signup-btn" type="button">
+                        <i class="bi bi-microsoft"></i> Sign up with Microsoft
+                    </button>
+                    <button class="btn btn-outline-dark social-signup-btn" type="button">
+                        <i class="bi bi-github"></i> Sign up with GitHub
+                    </button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="mb-0">Already have an account? <a href="login.html" class="text-decoration-none">Log in</a></p>
+                    <p class="mt-2 mb-0"><a href="index.html" class="text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Back to Home</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupForm = document.getElementById('signupForm');
+            
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const firstName = document.getElementById('floatingFirstName').value;
+                const lastName = document.getElementById('floatingLastName').value;
+                const email = document.getElementById('floatingEmail').value;
+                const role = document.getElementById('floatingRole').value;
+                const password = document.getElementById('floatingPassword').value;
+                const confirmPassword = document.getElementById('floatingConfirmPassword').value;
+                
+                // Basic validation
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match. Please try again.');
+                    return;
+                }
+                
+                // Password strength validation
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                if (!passwordRegex.test(password)) {
+                    alert('Password does not meet the requirements.');
+                    return;
+                }
+                
+                // In a real application, you would send this to a server for account creation
+                // For this demo, we'll just store the user in localStorage
+                const users = JSON.parse(localStorage.getItem('labLogbookUsers') || '[]');
+                
+                // Check if email is already in use
+                if (users.some(user => user.email === email)) {
+                    alert('Email is already in use. Please use a different email or log in.');
+                    return;
+                }
+                
+                // Create new user
+                const newUser = {
+                    id: 'user_' + Date.now(),
+                    name: firstName + ' ' + lastName,
+                    email: email,
+                    role: role,
+                    password: password,  // In a real app, this would be hashed
+                    created: new Date().toISOString()
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('labLogbookUsers', JSON.stringify(users));
+                
+                // Set current user in session
+                sessionStorage.setItem('currentUser', JSON.stringify({
+                    id: newUser.id,
+                    name: newUser.name,
+                    email: newUser.email
+                }));
+                
+                // Redirect to dashboard
+                alert('Account created successfully! Redirecting to dashboard...');
+                window.location.href = 'dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+/lab-research-logbook/
+├── index.html               # Landing page
+├── login.html               # Login page
+├── register.html            # Registration page
+├── dashboard.html           # Main dashboard
+├── protocols/               # Protocol templates folder
+│   ├── sds-page.html        # SDS-PAGE protocol
+│   ├── western-blot.html    # Western Blot protocol
+│   ├── pcr.html             # PCR protocol
+│   ├── elisa.html           # ELISA protocol
+│   └── custom-builder.html  # Custom protocol builder
+├── experiments/             # Experiment management
+│   ├── all-experiments.html # View all experiments
+│   ├── experiment-view.html # View single experiment
+│   └── reports.html         # Reports and analytics
+├── assets/                  # Static assets
+│   ├── css/                 # Stylesheets
+│   │   ├── main.css         # Main stylesheet
+│   │   └── print.css        # Print-specific styles
+│   ├── js/                  # JavaScript files
+│   │   ├── main.js          # Main functionality
+│   │   ├── auth.js          # Authentication
+│   │   ├── protocols.js     # Protocol handling
+│   │   ├── experiments.js   # Experiment data handling
+│   │   ├── export.js        # Export/Print functionality
+│   │   └── custom-builder.js # Custom protocol builder
+│   └── img/                 # Images
+└── README.md                # Project documentation
+
