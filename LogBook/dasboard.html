@@ -127,7 +127,7 @@
                     <input type="password" id="password" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your password">
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition duration-300 font-medium">
+                <button type="submit" id="loginBtn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition duration-300 font-medium">
                     Sign In
                 </button>
             </form>
@@ -1322,7 +1322,7 @@
             const userType = document.getElementById('userType').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const loginBtn = document.getElementById('loginBtn');
+            const loginBtn = document.querySelector('#loginBtn') || document.querySelector('button[type="submit"]');
 
             if (!userType || !email || !password) {
                 showAlert('Please fill in all fields', 'error');
