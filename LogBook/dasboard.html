@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory Research Logbook System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .sidebar-transition {
+            transition: transform 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .sidebar-hidden {
+                transform: translateX(-100%);
+            }
+        }
+        .form-input {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .research-entry {
+            border-left: 4px solid #667eea;
+        }
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-right: 3px solid white;
+        }
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="mb-4">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f7290073-2803-4199-a123-46694a3bacb2.png" alt="Laboratory flask icon with bubbling liquid representing scientific research and experimentation" class="mx-auto rounded-full">
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Lab Logbook</h1>
+                <p class="text-gray-600">Laboratory Research Management System</p>
+            </div>
+            
+            <!-- Alert Messages -->
+            <div id="loginAlert" class="hidden"></div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">User Type</label>
+                    <select id="userType" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none">
+                        <option value="">Select User Type</option>
+                        <option value="lab_manager">Laboratory Manager</option>
+                        <option value="internal_student">Internal Campus Student</option>
+                        <option value="external_student">External Campus Student</option>
+                        <option value="internal_researcher">Internal Campus Researcher</option>
+                        <option value="external_researcher">External Campus Researcher</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your email">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your password">
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition duration-300 font-medium">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm">Forgot password?</a>
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-xs text-gray-600 mb-2">Demo Credentials:</p>
+                    <p class="text-xs text-gray-700">Manager: admin@lab.edu / admin123</p>
+                    <p class="text-xs text-gray-700">Student: student@lab.edu / student123</p>
+                    <p class="text-xs text-gray-700">Researcher: researcher@lab.edu / researcher123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden min-h-screen bg-gray-50">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-bars text-gray-600"></i>
+                    </button>
+                    <h1 class="text-2xl font-bold text-gray-800">Laboratory Logbook</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="search" placeholder="Search experiments, samples..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <div class="relative">
+                        <button class="p-2 rounded-lg hover:bg-gray-100 relative">
+                            <i class="fas fa-bell text-gray-600"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/60b6b8c7-6998-4f5a-a467-6376e1fadf6b.png" alt="Professional headshot of laboratory user with lab coat and safety glasses" class="w-10 h-10 rounded-full">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700" id="userName">Dr. Smith</p>
+                            <p class="text-xs text-gray-500" id="userRole">Lab Manager</p>
+                        </div>
+                    </div>
+                    
+                    <button id="logoutBtn" class="p-2 rounded-lg hover:bg-gray-100 text-gray-600">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="bg-gradient-to-b from-blue-700 to-purple-700 text-white w-64 min-h-screen sidebar-transition fixed md:relative z-10">
+                <div class="p-6">
+                    <div class="mb-8">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d3f99776-b166-4bee-9665-9f407dff2cc0.png" alt="University laboratory logo with scientific symbols and institutional branding" class="mx-auto">
+                    </div>
+                    
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg active" data-page="overview">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Overview</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="experiments">
+                                <i class="fas fa-flask"></i>
+                                <span>Experiments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="samples">
+                                <i class="fas fa-vial"></i>
+                                <span>Sample Management</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="equipment">
+                                <i class="fas fa-cogs"></i>
+                                <span>Equipment</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="projects">
+                                <i class="fas fa-project-diagram"></i>
+                                <span>Projects</span>
+                            </a>
+                        </li>
+                        <li id="userManagementNav" class="hidden">
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="users">
+                                <i class="fas fa-users"></i>
+                                <span>User Management</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="reports">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="settings">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-6 md:ml-0">
+                <!-- Overview Page -->
+                <div id="overviewPage" class="page-content">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Dashboard Overview</h2>
+                        <p class="text-gray-600">Welcome back! Here's what's happening in your laboratory.</p>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-1">Active Experiments</p>
+                                    <p class="text-2xl font-bold text-gray-800">24</p>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <i class="fas fa-flask text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-green-500 text-sm">+12%</span>
+                                <span class="text-gray-500 text-sm ml-1">from last week</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-1">Sample Count</p>
+                                    <p class="text-2xl font-bold text-gray-800">156</p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <i class="fas fa-vial text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-green-500 text-sm">+8%</span>
+                                <span class="text-gray-500 text-sm ml-1">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-1">Equipment Usage</p>
+                                    <p class="text-2xl font-bold text-gray-800">89%</p>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-lg">
+                                    <i class="fas fa-cogs text-yellow-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-red-500 text-sm">-3%</span>
+                                <span class="text-gray-500 text-sm ml-1">from last week</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-1">Active Users</p>
+                                    <p class="text-2xl font-bold text-gray-800">18</p>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <i class="fas fa-users text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-green-500 text-sm">+5%</span>
+                                <span class="text-gray-500 text-sm ml-1">from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Recent Activity -->
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                                    <div class="bg-blue-100 p-2 rounded-full">
+                                        <i class="fas fa-flask text-blue-600"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800">New experiment started</p>
+                                        <p class="text-sm text-gray-600">Protein synthesis analysis - Dr. Johnson</p>
+                                        <p class="text-xs text-gray-500">2 hours ago</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                                    <div class="bg-green-100 p-2 rounded-full">
+                                        <i class="fas fa-check text-green-600"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800">Sample analysis completed</p>
+                                        <p class="text-sm text-gray-600">Blood sample #BS-2024-001 - Maria Garcia</p>
+                                        <p class="text-xs text-gray-500">4 hours ago</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                                    <div class="bg-yellow-100 p-2 rounded-full">
+                                        <i class="fas fa-wrench text-yellow-600"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800">Equipment maintenance scheduled</p>
+                                        <p class="text-sm text-gray-600">Centrifuge CF-300 - Maintenance Team</p>
+                                        <p class="text-xs text-gray-500">6 hours ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>New Experiment</span>
+                                </button>
+                                
+                                <button class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-200 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-vial"></i>
+                                    <span>Add Sample</span>
+                                </button>
+                                
+                                <button class="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition duration-200 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Schedule Equipment</span>
+                                </button>
+                                
+                                <button class="w-full bg-gray-600 text-white p-3 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-download"></i>
+                                    <span>Export Report</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experiments Page -->
+                <div id="experimentsPage" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2">Experiments</h2>
+                            <p class="text-gray-600">Manage and track your laboratory experiments</p>
+                        </div>
+                        <button id="newExperimentBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>New Experiment</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Filters -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <select class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="paused">Paused</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Researcher</label>
+                                <select class="w-full p-2 border border-gray-300 rounded-lg">
+                                    <option value="">All Researchers</option>
+                                    <option value="dr_johnson">Dr. Johnson</option>
+                                    <option value="maria_garcia">Maria Garcia</option>
+                                    <option value="john_smith">John Smith</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                                <input type="date" class="w-full p-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div class="flex items-end">
+                                <button class="w-full bg-gray-600 text-white p-2 rounded-lg hover:bg-gray-700 transition duration-200">
+                                    Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Experiments List -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Protein Synthesis Analysis</h3>
+                                <span class="status-badge bg-green-100 text-green-800">Active</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Dr. Johnson</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Started: March 15, 2024</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-clock text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Duration: 2 weeks</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-gray-600">Progress</span>
+                                    <span class="text-sm font-medium text-gray-800">65%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex space-x-2">
+                                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">View</button>
+                                <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Edit</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Cell Culture Study</h3>
+                                <span class="status-badge bg-yellow-100 text-yellow-800">Paused</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Maria Garcia</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Started: March 10, 2024</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-clock text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Duration: 3 weeks</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-gray-600">Progress</span>
+                                    <span class="text-sm font-medium text-gray-800">40%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 40%"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex space-x-2">
+                                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">View</button>
+                                <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Edit</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">DNA Extraction Protocol</h3>
+                                <span class="status-badge bg-blue-100 text-blue-800">Completed</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">John Smith</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Completed: March 8, 2024</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-clock text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Duration: 1 week</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-gray-600">Progress</span>
+                                    <span class="text-sm font-medium text-gray-800">100%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex space-x-2">
+                                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">View</button>
+                                <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Report</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Samples Page -->
+                <div id="samplesPage" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2">Sample Management</h2>
+                            <p class="text-gray-600">Track and manage laboratory samples</p>
+                        </div>
+                        <button id="newSampleBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-200 flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Sample</span>
+                        </button>
+                    </div>
+
+                    <!-- Sample Tracking Table -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-semibold text-gray-800">Sample Inventory</h3>
+                                <div class="flex space-x-3">
+                                    <input type="search" placeholder="Search samples..." class="px-4 py-2 border border-gray-300 rounded-lg">
+                                    <select class="px-4 py-2 border border-gray-300 rounded-lg">
+                                        <option>All Types</option>
+                                        <option>Blood</option>
+                                        <option>Tissue</option>
+                                        <option>Cell Culture</option>
+                                        <option>DNA</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Sample ID</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Date Collected</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Storage</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">BS-2024-001</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Blood</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Patient A</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2024-03-15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Freezer A1</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge bg-green-100 text-green-800">Available</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800">View</button>
+                                            <button class="text-gray-600 hover:text-gray-800">Edit</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">TS-2024-002</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Tissue</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Biopsy B</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2024-03-14</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Freezer B2</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge bg-yellow-100 text-yellow-800">In Use</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800">View</button>
+                                            <button class="text-gray-600 hover:text-gray-800">Edit</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">CC-2024-003</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Cell Culture</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">HeLa Cells</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2024-03-13</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Incubator C</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge bg-green-100 text-green-800">Growing</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800">View</button>
+                                            <button class="text-gray-600 hover:text-gray-800">Edit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipment Page -->
+                <div id="equipmentPage" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2">Equipment Management</h2>
+                            <p class="text-gray-600">Monitor and schedule laboratory equipment</p>
+                        </div>
+                        <button class="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition duration-200 flex items-center space-x-2">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>Schedule Equipment</span>
+                        </button>
+                    </div>
+
+                    <!-- Equipment Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/20aff5fd-f6ad-4e16-b2bb-a0a27e5a43da.png" alt="Digital microscope with advanced imaging capabilities and LED illumination system" class="w-10 h-10">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Digital Microscope</h3>
+                                    <p class="text-sm text-gray-600">ZEISS-2024-001</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Status:</span>
+                                    <span class="status-badge bg-green-100 text-green-800">Available</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Location:</span>
+                                    <span class="text-sm text-gray-800">Room 101</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Last Maintenance:</span>
+                                    <span class="text-sm text-gray-800">2024-02-15</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
+                                Reserve Now
+                            </button>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="bg-yellow-100 p-3 rounded-lg">
+                                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/aa2078ab-5977-4456-8b92-4ef9b1bdd7f5.png" alt="Laboratory centrifuge machine with digital display and multiple rotor configurations" class="w-10 h-10">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Centrifuge CF-300</h3>
+                                    <p class="text-sm text-gray-600">CENT-2024-002</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Status:</span>
+                                    <span class="status-badge bg-yellow-100 text-yellow-800">In Use</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Location:</span>
+                                    <span class="text-sm text-gray-800">Room 102</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Available At:</span>
+                                    <span class="text-sm text-gray-800">14:30</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg cursor-not-allowed">
+                                Currently In Use
+                            </button>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="bg-red-100 p-3 rounded-lg">
+                                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1f425c33-81c0-4cfc-a6b6-2b8ce4ec06f8.png" alt="PCR thermal cycler machine with temperature control and programmable protocols" class="w-10 h-10">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">PCR Machine</h3>
+                                    <p class="text-sm text-gray-600">PCR-2024-003</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Status:</span>
+                                    <span class="status-badge bg-red-100 text-red-800">Maintenance</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Location:</span>
+                                    <span class="text-sm text-gray-800">Room 103</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Returns:</span>
+                                    <span class="text-sm text-gray-800">2024-03-20</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-red-600 text-white py-2 px-4 rounded-lg cursor-not-allowed">
+                                Under Maintenance
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Schedule -->
+                    <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Today's Equipment Schedule</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-800">Digital Microscope - Maria Garcia</p>
+                                    <p class="text-sm text-gray-600">Cell morphology analysis</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-gray-800">10:00 - 12:00</p>
+                                    <span class="status-badge bg-blue-100 text-blue-800">Active</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-800">Spectrophotometer - Dr. Johnson</p>
+                                    <p class="text-sm text-gray-600">Protein concentration measurement</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-gray-800">14:00 - 16:00</p>
+                                    <span class="status-badge bg-green-100 text-green-800">Scheduled</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Page -->
+                <div id="projectsPage" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2">Research Projects</h2>
+                            <p class="text-gray-600">Manage research projects and collaborations</p>
+                        </div>
+                        <button class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition duration-200 flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>New Project</span>
+                        </button>
+                    </div>
+
+                    <!-- Project Cards -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Cancer Research Initiative</h3>
+                                <span class="status-badge bg-green-100 text-green-800">Active</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Investigating novel therapeutic targets in breast cancer through proteomics analysis.</p>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-user-circle text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Principal Investigator: Dr. Sarah Johnson</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-users text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Team: 6 researchers, 3 students</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Timeline: Jan 2024 - Dec 2025</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-dollar-sign text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Budget: $250,000</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-gray-600">Overall Progress</span>
+                                    <span class="text-sm font-medium text-gray-800">45%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">View Details</button>
+                                <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Manage</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Neuroplasticity Study</h3>
+                                <span class="status-badge bg-blue-100 text-blue-800">Planning</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Exploring synaptic adaptation mechanisms in response to environmental stimuli.</p>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-user-circle text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Principal Investigator: Dr. Michael Chen</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-users text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Team: 4 researchers, 2 students</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Timeline: Apr 2024 - Mar 2026</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-dollar-sign text-gray-400"></i>
+                                    <span class="text-sm text-gray-600">Budget: $180,000</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-gray-600">Overall Progress</span>
+                                    <span class="text-sm font-medium text-gray-800">15%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">View Details</button>
+                                <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Manage</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Page (Lab Managers Only) -->
+                <div id="usersPage" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2">User Management</h2>
+                            <p class="text-gray-600">Manage access and permissions for laboratory users</p>
+                        </div>
+                        <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition duration-200 flex items-center space-x-2">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Add User</span>
+                        </button>
+                    </div>
+
+                    <!-- User Management Table -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Campus</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Last Active</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center space-x-3">
+                                                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/14b1fcc6-d6eb-4a11-bac1-7b6dc308b3ad.png" alt="Professional portrait of Dr. Johnson in laboratory attire with confident expression" class="w-10 h-10 rounded-full">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-800">Dr. Sarah Johnson</p>
+                                                    <p class="text-sm text-gray-500">s.johnson@university.edu</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Internal Researcher</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Main Campus</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2 hours ago</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                            <button class="text-red-600 hover:text-red-800">Suspend</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center space-x-3">
+                                                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b0cdef4e-fc02-4794-9256-f58a81b4899f.png" alt="Student Maria Garcia wearing lab safety goggles with friendly smile in laboratory setting" class="w-10 h-10 rounded-full">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-800">Maria Garcia</p>
+                                                    <p class="text-sm text-gray-500">m.garcia@student.edu</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Internal Student</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Main Campus</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">1 day ago</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                            <button class="text-red-600 hover:text-red-800">Suspend</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center space-x-3">
+                                                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/4fdd6619-2f2e-4096-adc1-2802b342214d.png" alt="External researcher John Smith in professional business attire with laboratory equipment background" class="w-10 h-10 rounded-full">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-800">John Smith</p>
+                                                    <p class="text-sm text-gray-500">j.smith@external.org</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">External Researcher</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Partner Institution</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">3 days ago</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge bg-yellow-100 text-yellow-800">Limited Access</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                            <button class="text-red-600 hover:text-red-800">Suspend</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Page -->
+                <div id="reportsPage" class="page-content hidden">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Reports & Analytics</h2>
+                        <p class="text-gray-600">Generate reports and analyze laboratory performance</p>
+                    </div>
+
+                    <!-- Report Generation -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="text-center">
+                                <div class="bg-blue-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">Activity Report</h3>
+                                <p class="text-gray-600 text-sm mb-4">Generate comprehensive activity reports for experiments and equipment usage</p>
+                                <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">Generate Report</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="text-center">
+                                <div class="bg-green-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <i class="fas fa-vial text-green-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">Sample Report</h3>
+                                <p class="text-gray-600 text-sm mb-4">Track sample inventory, usage patterns, and storage statistics</p>
+                                <button class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200">Generate Report</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="text-center">
+                                <div class="bg-purple-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <i class="fas fa-users text-purple-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">User Analytics</h3>
+                                <p class="text-gray-600 text-sm mb-4">Analyze user engagement, access patterns, and productivity metrics</p>
+                                <button class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200">Generate Report</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Monthly Activity Trends</h3>
+                            <canvas id="activityChart" class="w-full h-64"></canvas>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Equipment Utilization</h3>
+                            <canvas id="equipmentChart" class="w-full h-64"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settingsPage" class="page-content hidden">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Settings</h2>
+                        <p class="text-gray-600">Configure your laboratory management preferences</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Profile Settings -->
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Profile Information</h3>
+                            <form class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" value="Sarah">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" value="Johnson">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                    <input type="email" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" value="s.johnson@university.edu">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                                    <input type="text" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" value="Biochemistry">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                                    <textarea class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none h-24" placeholder="Tell us about your research interests..."></textarea>
+                                </div>
+                                
+                                <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
+                                    Update Profile
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Notification Settings -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Notifications</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Email Notifications</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Equipment Alerts</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Project Updates</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Sample Expiry Warnings</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for New Experiment -->
+    <div id="experimentModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Create New Experiment</h3>
+                    <button id="closeExperimentModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Experiment Title</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter experiment title">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Principal Investigator</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none">
+                                <option value="">Select Investigator</option>
+                                <option value="dr_johnson">Dr. Johnson</option>
+                                <option value="dr_chen">Dr. Chen</option>
+                                <option value="dr_smith">Dr. Smith</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Expected Duration</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none">
+                                <option value="">Select Duration</option>
+                                <option value="1_week">1 Week</option>
+                                <option value="2_weeks">2 Weeks</option>
+                                <option value="1_month">1 Month</option>
+                                <option value="3_months">3 Months</option>
+                                <option value="6_months">6 Months</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none h-24" placeholder="Describe the experiment objectives and methodology"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Required Equipment</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm">Microscope</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm">Centrifuge</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm">PCR Machine</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm">Spectrophotometer</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelExperiment" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-200">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                            Create Experiment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = {
+            type: '',
+            name: '',
+            role: ''
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            initializeCharts();
+        });
+
+        // Event Listeners
+        function initializeEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Sidebar navigation
+            document.querySelectorAll('[data-page]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = e.currentTarget.dataset.page;
+                    showPage(page);
+                    updateActiveNavItem(e.currentTarget);
+                });
+            });
+            
+            // Sidebar toggle for mobile
+            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Modal controls
+            document.getElementById('newExperimentBtn').addEventListener('click', () => {
+                document.getElementById('experimentModal').classList.remove('hidden');
+            });
+            
+            document.getElementById('closeExperimentModal').addEventListener('click', () => {
+                document.getElementById('experimentModal').classList.add('hidden');
+            });
+            
+            document.getElementById('cancelExperiment').addEventListener('click', () => {
+                document.getElementById('experimentModal').classList.add('hidden');
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('experimentModal').addEventListener('click', (e) => {
+                if (e.target.id === 'experimentModal') {
+                    document.getElementById('experimentModal').classList.add('hidden');
+                }
+            });
+        }
+
+        // Google Sheets API configuration
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzVD2HUiCYyJDMwCzmJnEZC3VOAh9X7RiExHW-_oNuMIhIUes_qXsO-or9YWf3TaXAS/exec';
+
+        // Utility functions for alerts
+        function showAlert(message, type = 'error') {
+            const alertDiv = document.getElementById('loginAlert');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.classList.remove('hidden');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        function hideAlert() {
+            document.getElementById('loginAlert').classList.add('hidden');
+        }
+
+        // Google Sheets API functions
+        async function makeAPIRequest(data) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.text();
+                return JSON.parse(result);
+            } catch (error) {
+                console.error('API Error:', error);
+                throw new Error('Network error occurred. Please try again.');
+            }
+        }
+
+        async function authenticateUser(email, password, userType) {
+            return await makeAPIRequest({
+                action: 'authenticate',
+                email: email,
+                password: password,
+                userType: userType
+            });
+        }
+
+        async function getAllUsers() {
+            return await makeAPIRequest({
+                action: 'getAllUsers'
+            });
+        }
+
+        async function addUser(userData) {
+            return await makeAPIRequest({
+                action: 'addUser',
+                userData: userData
+            });
+        }
+
+        async function updateUser(userId, updates) {
+            return await makeAPIRequest({
+                action: 'updateUser',
+                userId: userId,
+                updates: updates
+            });
+        }
+
+        // Handle login form submission with Google Sheets integration
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideAlert();
+            
+            const userType = document.getElementById('userType').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (!userType || !email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<div class="loading-spinner"></div>Signing in...';
+            loginBtn.disabled = true;
+            
+            try {
+                // Authenticate with Google Sheets
+                const result = await authenticateUser(email, password, userType);
+                
+                if (result.success) {
+                    // Set current user data
+                    currentUser = result.user;
+                    
+                    // Update UI with user info
+                    document.getElementById('userName').textContent = currentUser.name;
+                    document.getElementById('userRole').textContent = currentUser.role;
+                    
+                    // Hide login screen and show dashboard
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('dashboard').classList.remove('hidden');
+                    
+                    // Show user management for lab managers only
+                    if (currentUser.type === 'lab_manager') {
+                        document.getElementById('userManagementNav').classList.remove('hidden');
+                        loadUserManagement();
+                    }
+                } else {
+                    showAlert(result.message || 'Invalid credentials. Please check your email, password, and user type.', 'error');
+                }
+            } catch (error) {
+                showAlert(error.message || 'Login failed. Please check your internet connection and try again.', 'error');
+            } finally {
+                // Reset button state
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }
+        }
+
+        // Load user management data
+        async function loadUserManagement() {
+            try {
+                const result = await getAllUsers();
+                if (result.success) {
+                    updateUserManagementTable(result.users);
+                }
+            } catch (error) {
+                console.error('Failed to load users:', error);
+            }
+        }
+
+        // Update user management table
+        function updateUserManagementTable(users) {
+            const tbody = document.querySelector('#usersPage tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/977fd5f7-150e-4528-a610-49068bf9fa07.png" alt="Profile photo of ${user.name}" class="w-10 h-10 rounded-full">
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">${user.name}</p>
+                                <p class="text-sm text-gray-500">${user.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${user.role}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${user.campus || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${formatLastActive(user.lastActive)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge ${getStatusClass(user.status)}">${user.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button class="text-blue-600 hover:text-blue-800" onclick="editUser('${user.id}')">Edit</button>
+                        <button class="text-red-600 hover:text-red-800" onclick="toggleUserStatus('${user.id}', '${user.status}')">
+                            ${user.status === 'active' ? 'Suspend' : 'Activate'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatLastActive(lastActive) {
+            if (!lastActive) return 'Never';
+            const date = new Date(lastActive);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            
+            if (diffHours < 1) return 'Just now';
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            const diffDays = Math.floor(diffHours / 24);
+            return `${diffDays} days ago`;
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'active': return 'bg-green-100 text-green-800';
+                case 'suspended': return 'bg-red-100 text-red-800';
+                case 'pending': return 'bg-yellow-100 text-yellow-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        async function editUser(userId) {
+            // Implementation for editing user
+            showAlert('User edit functionality will be implemented.', 'info');
+        }
+
+        async function toggleUserStatus(userId, currentStatus) {
+            try {
+                const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
+                const result = await updateUser(userId, { status: newStatus });
+                
+                if (result.success) {
+                    showAlert(`User status updated successfully.`, 'success');
+                    await loadUserManagement(); // Reload the table
+                } else {
+                    showAlert(result.message || 'Failed to update user status.', 'error');
+                }
+            } catch (error) {
+                showAlert('Failed to update user status. Please try again.', 'error');
+            }
+        }
+
+        // Fallback user data for offline mode
+        function setUserData(userType) {
+            const userData = {
+                'lab_manager': {
+                    id: 'demo1',
+                    name: 'Dr. Sarah Johnson',
+                    role: 'Lab Manager',
+                    email: 'admin@lab.edu',
+                    type: userType,
+                    status: 'active'
+                },
+                'internal_student': {
+                    id: 'demo2',
+                    name: 'Maria Garcia',
+                    role: 'Internal Student',
+                    email: 'student@lab.edu',
+                    type: userType,
+                    status: 'active'
+                },
+                'external_student': {
+                    id: 'demo3',
+                    name: 'Alex Chen',
+                    role: 'External Student',
+                    email: 'external@student.edu',
+                    type: userType,
+                    status: 'active'
+                },
+                'internal_researcher': {
+                    id: 'demo4',
+                    name: 'Dr. Michael Smith',
+                    role: 'Internal Researcher',
+                    email: 'researcher@lab.edu',
+                    type: userType,
+                    status: 'active'
+                },
+                'external_researcher': {
+                    id: 'demo5',
+                    name: 'Dr. John Wilson',
+                    role: 'External Researcher',
+                    email: 'external@researcher.edu',
+                    type: userType,
+                    status: 'active'
+                }
+            };
+            
+            currentUser = userData[userType] || {};
+            
+            document.getElementById('userName').textContent = currentUser.name || 'Unknown User';
+            document.getElementById('userRole').textContent = currentUser.role || 'Unknown Role';
+        }
+
+        // Show specific page
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById(pageName + 'Page').classList.remove('hidden');
+        }
+
+        // Update active navigation item
+        function updateActiveNavItem(activeItem) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            activeItem.classList.add('active');
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-hidden');
+        }
+
+        // Handle logout
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Hide dashboard and show login screen
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                
+                // Reset form
+                document.getElementById('loginForm').reset();
+                
+                // Hide user management nav
+                document.getElementById('userManagementNav').classList.add('hidden');
+                
+                // Reset to overview page
+                showPage('overview');
+                document.querySelector('[data-page="overview"]').classList.add('active');
+            }
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Activity Chart
+            const activityCtx = document.getElementById('activityChart');
+            if (activityCtx) {
+                new Chart(activityCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Experiments',
+                            data: [12, 19, 15, 25, 22, 30],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: 'Samples',
+                            data: [8, 15, 12, 18, 16, 22],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Equipment Chart
+            const equipmentCtx = document.getElementById('equipmentChart');
+            if (equipmentCtx) {
+                new Chart(equipmentCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Microscopes', 'Centrifuges', 'PCR Machines', 'Spectrophotometers', 'Other'],
+                        datasets: [{
+                            data: [30, 25, 20, 15, 10],
+                            backgroundColor: [
+                                'rgb(59, 130, 246)',
+                                'rgb(16, 185, 129)',
+                                'rgb(245, 158, 11)',
+                                'rgb(139, 92, 246)',
+                                'rgb(107, 114, 128)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (window.innerWidth < 768 && 
+                !sidebar.contains(e.target) && 
+                !sidebarToggle.contains(e.target) &&
+                !sidebar.classList.contains('sidebar-hidden')) {
+                sidebar.classList.add('sidebar-hidden');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('sidebar-hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+
