@@ -100,10 +100,10 @@
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Lab Logbook</h1>
                 <p class="text-gray-600">Laboratory Research Management System</p>
             </div>
-            
+
             <!-- Alert Messages -->
             <div id="loginAlert" class="hidden"></div>
-            
+
             <form id="loginForm" class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">User Type</label>
@@ -116,22 +116,22 @@
                         <option value="external_researcher">External Campus Researcher</option>
                     </select>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                     <input type="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your email">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                     <input type="password" id="password" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your password">
                 </div>
-                
+
                 <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition duration-300 font-medium">
                     Sign In
                 </button>
             </form>
-            
+
             <div class="mt-6 text-center">
                 <a href="#" class="text-blue-600 hover:text-blue-800 text-sm">Forgot password?</a>
                 <div class="mt-4 p-4 bg-gray-50 rounded-lg">
@@ -155,20 +155,20 @@
                     </button>
                     <h1 class="text-2xl font-bold text-gray-800">Laboratory Logbook</h1>
                 </div>
-                
+
                 <div class="flex items-center space-x-4">
                     <div class="relative">
                         <input type="search" placeholder="Search experiments, samples..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
                         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
-                    
+
                     <div class="relative">
                         <button class="p-2 rounded-lg hover:bg-gray-100 relative">
                             <i class="fas fa-bell text-gray-600"></i>
                             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
                         </button>
                     </div>
-                    
+
                     <div class="flex items-center space-x-3">
                         <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/60b6b8c7-6998-4f5a-a467-6376e1fadf6b.png" alt="Professional headshot of laboratory user with lab coat and safety glasses" class="w-10 h-10 rounded-full">
                         <div>
@@ -176,7 +176,7 @@
                             <p class="text-xs text-gray-500" id="userRole">Lab Manager</p>
                         </div>
                     </div>
-                    
+
                     <button id="logoutBtn" class="p-2 rounded-lg hover:bg-gray-100 text-gray-600">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
@@ -191,7 +191,7 @@
                     <div class="mb-8">
                         <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d3f99776-b166-4bee-9665-9f407dff2cc0.png" alt="University laboratory logo with scientific symbols and institutional branding" class="mx-auto">
                     </div>
-                    
+
                     <ul class="space-y-2">
                         <li>
                             <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg active" data-page="overview">
@@ -253,7 +253,7 @@
                         <h2 class="text-3xl font-bold text-gray-800 mb-2">Dashboard Overview</h2>
                         <p class="text-gray-600">Welcome back! Here's what's happening in your laboratory.</p>
                     </div>
-                    
+
                     <!-- Stats Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
@@ -271,7 +271,7 @@
                                 <span class="text-gray-500 text-sm ml-1">from last week</span>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -287,7 +287,7 @@
                                 <span class="text-gray-500 text-sm ml-1">from last month</span>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -303,7 +303,7 @@
                                 <span class="text-gray-500 text-sm ml-1">from last week</span>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -320,7 +320,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Recent Activity -->
                         <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
@@ -336,7 +336,7 @@
                                         <p class="text-xs text-gray-500">2 hours ago</p>
                                     </div>
                                 </div>
-                                
+
                                 <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                                     <div class="bg-green-100 p-2 rounded-full">
                                         <i class="fas fa-check text-green-600"></i>
@@ -347,7 +347,7 @@
                                         <p class="text-xs text-gray-500">4 hours ago</p>
                                     </div>
                                 </div>
-                                
+
                                 <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                                     <div class="bg-yellow-100 p-2 rounded-full">
                                         <i class="fas fa-wrench text-yellow-600"></i>
@@ -360,7 +360,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Quick Actions -->
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
@@ -369,17 +369,17 @@
                                     <i class="fas fa-plus"></i>
                                     <span>New Experiment</span>
                                 </button>
-                                
+
                                 <button class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-200 flex items-center justify-center space-x-2">
                                     <i class="fas fa-vial"></i>
                                     <span>Add Sample</span>
                                 </button>
-                                
+
                                 <button class="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition duration-200 flex items-center justify-center space-x-2">
                                     <i class="fas fa-calendar"></i>
                                     <span>Schedule Equipment</span>
                                 </button>
-                                
+
                                 <button class="w-full bg-gray-600 text-white p-3 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center justify-center space-x-2">
                                     <i class="fas fa-download"></i>
                                     <span>Export Report</span>
@@ -401,7 +401,7 @@
                             <span>New Experiment</span>
                         </button>
                     </div>
-                    
+
                     <!-- Filters -->
                     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -435,7 +435,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Experiments List -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
@@ -471,7 +471,7 @@
                                 <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Edit</button>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                             <div class="flex justify-between items-start mb-4">
                                 <h3 class="text-lg font-semibold text-gray-800">Cell Culture Study</h3>
@@ -505,7 +505,7 @@
                                 <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Edit</button>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                             <div class="flex justify-between items-start mb-4">
                                 <h3 class="text-lg font-semibold text-gray-800">DNA Extraction Protocol</h3>
@@ -572,7 +572,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="overflow-x-auto">
                             <table class="w-full">
                                 <thead class="bg-gray-50">
@@ -678,7 +678,7 @@
                                 Reserve Now
                             </button>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <div class="flex items-center space-x-4 mb-4">
                                 <div class="bg-yellow-100 p-3 rounded-lg">
@@ -707,7 +707,7 @@
                                 Currently In Use
                             </button>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <div class="flex items-center space-x-4 mb-4">
                                 <div class="bg-red-100 p-3 rounded-lg">
@@ -752,7 +752,7 @@
                                     <span class="status-badge bg-blue-100 text-blue-800">Active</span>
                                 </div>
                             </div>
-                            
+
                             <div class="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
                                 <div>
                                     <p class="font-medium text-gray-800">Spectrophotometer - Dr. Johnson</p>
@@ -788,7 +788,7 @@
                                 <span class="status-badge bg-green-100 text-green-800">Active</span>
                             </div>
                             <p class="text-gray-600 mb-4">Investigating novel therapeutic targets in breast cancer through proteomics analysis.</p>
-                            
+
                             <div class="space-y-3 mb-4">
                                 <div class="flex items-center space-x-2">
                                     <i class="fas fa-user-circle text-gray-400"></i>
@@ -807,7 +807,7 @@
                                     <span class="text-sm text-gray-600">Budget: $250,000</span>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-4">
                                 <div class="flex justify-between items-center mb-2">
                                     <span class="text-sm text-gray-600">Overall Progress</span>
@@ -817,20 +817,20 @@
                                     <div class="bg-green-600 h-2 rounded-full" style="width: 45%"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex space-x-2">
                                 <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">View Details</button>
                                 <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Manage</button>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <div class="flex justify-between items-start mb-4">
                                 <h3 class="text-lg font-semibold text-gray-800">Neuroplasticity Study</h3>
                                 <span class="status-badge bg-blue-100 text-blue-800">Planning</span>
                             </div>
                             <p class="text-gray-600 mb-4">Exploring synaptic adaptation mechanisms in response to environmental stimuli.</p>
-                            
+
                             <div class="space-y-3 mb-4">
                                 <div class="flex items-center space-x-2">
                                     <i class="fas fa-user-circle text-gray-400"></i>
@@ -849,7 +849,7 @@
                                     <span class="text-sm text-gray-600">Budget: $180,000</span>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-4">
                                 <div class="flex justify-between items-center mb-2">
                                     <span class="text-sm text-gray-600">Overall Progress</span>
@@ -859,7 +859,7 @@
                                     <div class="bg-blue-600 h-2 rounded-full" style="width: 15%"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex space-x-2">
                                 <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">View Details</button>
                                 <button class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200">Manage</button>
@@ -984,7 +984,7 @@
                                 <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">Generate Report</button>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                             <div class="text-center">
                                 <div class="bg-green-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -995,7 +995,7 @@
                                 <button class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200">Generate Report</button>
                             </div>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                             <div class="text-center">
                                 <div class="bg-purple-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -1014,7 +1014,7 @@
                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Monthly Activity Trends</h3>
                             <canvas id="activityChart" class="w-full h-64"></canvas>
                         </div>
-                        
+
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Equipment Utilization</h3>
                             <canvas id="equipmentChart" class="w-full h-64"></canvas>
@@ -1044,28 +1044,28 @@
                                         <input type="text" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" value="Johnson">
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                                     <input type="email" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" value="s.johnson@university.edu">
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
                                     <input type="text" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" value="Biochemistry">
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
                                     <textarea class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none h-24" placeholder="Tell us about your research interests..."></textarea>
                                 </div>
-                                
+
                                 <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
                                     Update Profile
                                 </button>
                             </form>
                         </div>
-                        
+
                         <!-- Notification Settings -->
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Notifications</h3>
@@ -1077,7 +1077,7 @@
                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                     </label>
                                 </div>
-                                
+
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm text-gray-700">Equipment Alerts</span>
                                     <label class="relative inline-flex items-center cursor-pointer">
@@ -1085,7 +1085,7 @@
                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                     </label>
                                 </div>
-                                
+
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm text-gray-700">Project Updates</span>
                                     <label class="relative inline-flex items-center cursor-pointer">
@@ -1093,7 +1093,7 @@
                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                     </label>
                                 </div>
-                                
+
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm text-gray-700">Sample Expiry Warnings</span>
                                     <label class="relative inline-flex items-center cursor-pointer">
@@ -1119,13 +1119,13 @@
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-                
+
                 <form class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Experiment Title</label>
                         <input type="text" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter experiment title">
                     </div>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Principal Investigator</label>
@@ -1148,12 +1148,12 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                         <textarea class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none h-24" placeholder="Describe the experiment objectives and methodology"></textarea>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Required Equipment</label>
                         <div class="grid grid-cols-2 gap-2">
@@ -1175,7 +1175,7 @@
                             </label>
                         </div>
                     </div>
-                    
+
                     <div class="flex justify-end space-x-3 pt-4">
                         <button type="button" id="cancelExperiment" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-200">
                             Cancel
@@ -1207,7 +1207,7 @@
         function initializeEventListeners() {
             // Login form
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            
+
             // Sidebar navigation
             document.querySelectorAll('[data-page]').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -1217,26 +1217,26 @@
                     updateActiveNavItem(e.currentTarget);
                 });
             });
-            
+
             // Sidebar toggle for mobile
             document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-            
+
             // Logout
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            
+
             // Modal controls
             document.getElementById('newExperimentBtn').addEventListener('click', () => {
                 document.getElementById('experimentModal').classList.remove('hidden');
             });
-            
+
             document.getElementById('closeExperimentModal').addEventListener('click', () => {
                 document.getElementById('experimentModal').classList.add('hidden');
             });
-            
+
             document.getElementById('cancelExperiment').addEventListener('click', () => {
                 document.getElementById('experimentModal').classList.add('hidden');
             });
-            
+
             // Close modal when clicking outside
             document.getElementById('experimentModal').addEventListener('click', (e) => {
                 if (e.target.id === 'experimentModal') {
@@ -1254,7 +1254,7 @@
             alertDiv.className = `alert alert-${type}`;
             alertDiv.textContent = message;
             alertDiv.classList.remove('hidden');
-            
+
             // Auto-hide after 5 seconds
             setTimeout(() => {
                 alertDiv.classList.add('hidden');
@@ -1275,7 +1275,7 @@
                     },
                     body: JSON.stringify(data)
                 });
-                
+
                 const result = await response.text();
                 return JSON.parse(result);
             } catch (error) {
@@ -1318,38 +1318,38 @@
         async function handleLogin(e) {
             e.preventDefault();
             hideAlert();
-            
+
             const userType = document.getElementById('userType').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const loginBtn = document.getElementById('loginBtn');
-            
+
             if (!userType || !email || !password) {
                 showAlert('Please fill in all fields', 'error');
                 return;
             }
-            
+
             // Show loading state
             const originalText = loginBtn.innerHTML;
             loginBtn.innerHTML = '<div class="loading-spinner"></div>Signing in...';
             loginBtn.disabled = true;
-            
+
             try {
                 // Authenticate with Google Sheets
                 const result = await authenticateUser(email, password, userType);
-                
+
                 if (result.success) {
                     // Set current user data
                     currentUser = result.user;
-                    
+
                     // Update UI with user info
                     document.getElementById('userName').textContent = currentUser.name;
                     document.getElementById('userRole').textContent = currentUser.role;
-                    
+
                     // Hide login screen and show dashboard
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('dashboard').classList.remove('hidden');
-                    
+
                     // Show user management for lab managers only
                     if (currentUser.type === 'lab_manager') {
                         document.getElementById('userManagementNav').classList.remove('hidden');
@@ -1383,7 +1383,7 @@
         function updateUserManagementTable(users) {
             const tbody = document.querySelector('#usersPage tbody');
             if (!tbody) return;
-            
+
             tbody.innerHTML = users.map(user => `
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -1417,7 +1417,7 @@
             const now = new Date();
             const diffMs = now - date;
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            
+
             if (diffHours < 1) return 'Just now';
             if (diffHours < 24) return `${diffHours} hours ago`;
             const diffDays = Math.floor(diffHours / 24);
@@ -1442,7 +1442,7 @@
             try {
                 const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
                 const result = await updateUser(userId, { status: newStatus });
-                
+
                 if (result.success) {
                     showAlert(`User status updated successfully.`, 'success');
                     await loadUserManagement(); // Reload the table
@@ -1498,9 +1498,9 @@
                     status: 'active'
                 }
             };
-            
+
             currentUser = userData[userType] || {};
-            
+
             document.getElementById('userName').textContent = currentUser.name || 'Unknown User';
             document.getElementById('userRole').textContent = currentUser.role || 'Unknown Role';
         }
@@ -1511,7 +1511,7 @@
             document.querySelectorAll('.page-content').forEach(page => {
                 page.classList.add('hidden');
             });
-            
+
             // Show selected page
             document.getElementById(pageName + 'Page').classList.remove('hidden');
         }
@@ -1522,7 +1522,7 @@
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
-            
+
             // Add active class to clicked item
             activeItem.classList.add('active');
         }
@@ -1539,13 +1539,13 @@
                 // Hide dashboard and show login screen
                 document.getElementById('dashboard').classList.add('hidden');
                 document.getElementById('loginScreen').classList.remove('hidden');
-                
+
                 // Reset form
                 document.getElementById('loginForm').reset();
-                
+
                 // Hide user management nav
                 document.getElementById('userManagementNav').classList.add('hidden');
-                
+
                 // Reset to overview page
                 showPage('overview');
                 document.querySelector('[data-page="overview"]').classList.add('active');
@@ -1591,7 +1591,7 @@
                     }
                 });
             }
-            
+
             // Equipment Chart
             const equipmentCtx = document.getElementById('equipmentChart');
             if (equipmentCtx) {
@@ -1627,9 +1627,9 @@
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
             const sidebarToggle = document.getElementById('sidebarToggle');
-            
-            if (window.innerWidth < 768 && 
-                !sidebar.contains(e.target) && 
+
+            if (window.innerWidth < 768 &&
+                !sidebar.contains(e.target) &&
                 !sidebarToggle.contains(e.target) &&
                 !sidebar.classList.contains('sidebar-hidden')) {
                 sidebar.classList.add('sidebar-hidden');
@@ -1646,4 +1646,3 @@
     </script>
 </body>
 </html>
-
