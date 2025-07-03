@@ -90,6 +90,92 @@
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
+    <!-- Register Screen -->
+    <div id="registerScreen" class="hidden min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="mb-4">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f7290073-2803-4199-a123-46694a3bacb2.png" alt="Laboratory flask icon with bubbling liquid representing scientific research and experimentation" class="mx-auto rounded-full">
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Register</h1>
+                <p class="text-gray-600">Join Laboratory Research Management System</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="registerAlert" class="hidden"></div>
+
+            <form id="registerForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                        <input type="text" id="regFirstName" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter first name" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        <input type="text" id="regLastName" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter last name" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="regEmail" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your email" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">User Type</label>
+                    <select id="regUserType" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" required>
+                        <option value="">Select User Type</option>
+                        <option value="internal_student">Internal Campus Student</option>
+                        <option value="external_student">External Campus Student</option>
+                        <option value="internal_researcher">Internal Campus Researcher</option>
+                        <option value="external_researcher">External Campus Researcher</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Institution/Organization</label>
+                    <input type="text" id="regInstitution" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your institution" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                    <input type="text" id="regDepartment" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Enter your department">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="regPassword" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Create password" required minlength="6">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none" placeholder="Confirm password" required minlength="6">
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <input type="checkbox" id="agreeTerms" class="mt-1" required>
+                    <label for="agreeTerms" class="text-sm text-gray-600">
+                        I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms of Service</a> and
+                        <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" id="registerBtn" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white p-3 rounded-lg hover:from-green-700 hover:to-blue-700 transition duration-300 font-medium">
+                    Register Account
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <button type="button" id="showLoginBtn" class="text-sm text-gray-600 hover:text-gray-800">
+                    Already have an account? <span class="text-blue-600 hover:text-blue-800">Sign in here</span>
+                </button>
+                <div class="mt-4">
+                    <p class="text-xs text-gray-500">Registration requests are subject to approval by laboratory management.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Login Screen -->
     <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
@@ -134,6 +220,11 @@
 
             <div class="mt-6 text-center">
                 <a href="#" class="text-blue-600 hover:text-blue-800 text-sm">Forgot password?</a>
+                <div class="mt-2">
+                    <button type="button" id="showRegisterBtn" class="text-sm text-gray-600 hover:text-gray-800">
+                        Don't have an account? <span class="text-blue-600 hover:text-blue-800">Register here</span>
+                    </button>
+                </div>
                 <div class="mt-4 p-4 bg-gray-50 rounded-lg">
                     <p class="text-xs text-gray-600 mb-2">Demo Credentials:</p>
                     <p class="text-xs text-gray-700">Manager: admin@lab.edu / admin123</p>
@@ -1208,6 +1299,21 @@
             // Login form
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
 
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+
+            // Show register screen
+            document.getElementById('showRegisterBtn').addEventListener('click', () => {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('registerScreen').classList.remove('hidden');
+            });
+
+            // Show login screen
+            document.getElementById('showLoginBtn').addEventListener('click', () => {
+                document.getElementById('registerScreen').classList.add('hidden');
+                document.getElementById('loginScreen').classList.remove('hidden');
+            });
+
             // Sidebar navigation
             document.querySelectorAll('[data-page]').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -1312,6 +1418,138 @@
                 userId: userId,
                 updates: updates
             });
+        }
+
+        // Handle registration form submission
+        async function handleRegister(e) {
+            e.preventDefault();
+            hideRegisterAlert();
+
+            const firstName = document.getElementById('regFirstName').value;
+            const lastName = document.getElementById('regLastName').value;
+            const email = document.getElementById('regEmail').value;
+            const userType = document.getElementById('regUserType').value;
+            const institution = document.getElementById('regInstitution').value;
+            const department = document.getElementById('regDepartment').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const registerBtn = document.getElementById('registerBtn');
+
+            // Validation
+            if (!firstName || !lastName || !email || !userType || !institution || !password || !confirmPassword) {
+                showRegisterAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showRegisterAlert('Passwords do not match', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showRegisterAlert('Password must be at least 6 characters long', 'error');
+                return;
+            }
+
+            if (!agreeTerms) {
+                showRegisterAlert('Please agree to the terms and conditions', 'error');
+                return;
+            }
+
+            // Show loading state
+            const originalText = registerBtn.innerHTML;
+            registerBtn.innerHTML = '<div class="loading-spinner"></div>Registering...';
+            registerBtn.disabled = true;
+
+            try {
+                // Try to register with Google Sheets API
+                const userData = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    name: `${firstName} ${lastName}`,
+                    email: email,
+                    password: password,
+                    type: userType,
+                    role: getRoleFromType(userType),
+                    institution: institution,
+                    department: department,
+                    campus: userType.includes('internal') ? 'Main Campus' : institution,
+                    status: 'pending', // Pending approval
+                    registeredAt: new Date().toISOString()
+                };
+
+                const result = await addUser(userData);
+
+                if (result.success) {
+                    showRegisterAlert('Registration successful! Your account is pending approval by laboratory management. You will be notified via email once approved.', 'success');
+
+                    // Reset form after successful registration
+                    setTimeout(() => {
+                        document.getElementById('registerForm').reset();
+                        document.getElementById('registerScreen').classList.add('hidden');
+                        document.getElementById('loginScreen').classList.remove('hidden');
+                        showAlert('Registration submitted successfully. Please wait for approval.', 'info');
+                    }, 3000);
+
+                } else {
+                    showRegisterAlert(result.message || 'Registration failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                // Demo mode fallback
+                console.log('API unavailable, simulating registration');
+
+                // Check if email already exists in demo credentials
+                const demoEmails = ['admin@lab.edu', 'student@lab.edu', 'researcher@lab.edu'];
+
+                if (demoEmails.includes(email)) {
+                    showRegisterAlert('Email already exists. Please use a different email address.', 'error');
+                } else {
+                    showRegisterAlert('Registration successful! In demo mode, you can now use these credentials to login after approval.', 'success');
+
+                    // Reset form after successful registration
+                    setTimeout(() => {
+                        document.getElementById('registerForm').reset();
+                        document.getElementById('registerScreen').classList.add('hidden');
+                        document.getElementById('loginScreen').classList.remove('hidden');
+                        showAlert('Demo registration completed. Please contact admin for login credentials.', 'info');
+                    }, 3000);
+                }
+            } finally {
+                // Reset button state
+                registerBtn.innerHTML = originalText;
+                registerBtn.disabled = false;
+            }
+        }
+
+        // Utility function to convert user type to role
+        function getRoleFromType(userType) {
+            const roleMap = {
+                'lab_manager': 'Lab Manager',
+                'internal_student': 'Internal Student',
+                'external_student': 'External Student',
+                'internal_researcher': 'Internal Researcher',
+                'external_researcher': 'External Researcher'
+            };
+            return roleMap[userType] || 'Unknown Role';
+        }
+
+        // Utility functions for register alerts
+        function showRegisterAlert(message, type = 'error') {
+            const alertDiv = document.getElementById('registerAlert');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.classList.remove('hidden');
+
+            // Auto-hide after 8 seconds for success messages
+            const timeout = type === 'success' ? 8000 : 5000;
+            setTimeout(() => {
+                alertDiv.classList.add('hidden');
+            }, timeout);
+        }
+
+        function hideRegisterAlert() {
+            document.getElementById('registerAlert').classList.add('hidden');
         }
 
         // Handle login form submission with Google Sheets integration
