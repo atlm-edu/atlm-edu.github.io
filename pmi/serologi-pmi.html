@@ -81,6 +81,10 @@
             vertical-align: middle;
             text-align: center;
         }
+        .summary-table td.currency-display {
+            vertical-align: middle;
+            text-align: right;
+        }
         .total-row {
             background-color: #e9ecef;
             font-weight: bold;
@@ -229,12 +233,12 @@
             <h4 class="section-title">
                 <i class="fas fa-table"></i> INPUT DATA PEMBAGIAN SEROLOGI
             </h4>
-            
+
             <div class="alert alert-info">
-                <strong>Panduan:</strong> Sistem akan menghitung pembagian otomatis berdasarkan jumlah petugas per tanggal. 
+                <strong>Panduan:</strong> Sistem akan menghitung pembagian otomatis berdasarkan jumlah petugas per tanggal.
                 Tarif saat ini: <span id="currentRate">Rp 2.000</span> per sample.
             </div>
-            
+
             <div class="table-container">
                 <div class="table-responsive">
                     <table class="table main-table table-bordered">
@@ -265,7 +269,7 @@
                         </tfoot>
                     </table>
                 </div>
-                
+
                 <div class="btn-group-custom d-flex">
                     <button class="btn btn-danger btn-custom" onclick="addNewDateGroup()">
                         <i class="fas fa-plus"></i> Tambah Tanggal Baru
@@ -284,7 +288,7 @@
             <h4 class="section-title">
                 <i class="fas fa-users"></i> RINGKASAN PEMBAGIAN PER PETUGAS
             </h4>
-            
+
             <div class="table-container">
                 <div class="table-responsive">
                     <table class="table summary-table table-bordered">
@@ -314,20 +318,6 @@
         </div>
 
         <div class="footer-section">
-            <div class="text-center mb-4">
-                <div class="btn-group">
-                    <button class="btn btn-success btn-custom btn-lg" onclick="exportToExcel()">
-                        <i class="fas fa-file-excel"></i> Export ke Excel
-                    </button>
-                    <button class="btn btn-info btn-custom btn-lg" onclick="exportToCSV()">
-                        <i class="fas fa-file-csv"></i> Export ke CSV (Format Template)
-                    </button>
-                    <button class="btn btn-secondary btn-custom btn-lg" onclick="printReport()">
-                        <i class="fas fa-print"></i> Print Report
-                    </button>
-                </div>
-            </div>
-
             <div class="signature-section">
                 <div class="signature-box">
                     <div><strong>Mengetahui</strong></div>
@@ -370,8 +360,23 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+
+                    <div class="text-center my-4">
+                <div class="btn-group">
+                    <button class="btn btn-success btn-custom btn-lg" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Export ke Excel
+                    </button>
+                    <button class="btn btn-info btn-custom btn-lg" onclick="exportToCSV()">
+                        <i class="fas fa-file-csv"></i> Export ke CSV (Format Template)
+                    </button>
+                    <button class="btn btn-secondary btn-custom btn-lg" onclick="printReport()">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+            </div>
+
+    </div>        </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -400,12 +405,12 @@
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
-            
+
             const months = [
                 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
                 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'
             ];
-            
+
             switch(format) {
                 case 'dd/mm/yyyy': return `${day}/${month}/${year}`;
                 case 'dd mmm yyyy': return `${day} ${months[date.getMonth()]} ${year}`;
@@ -452,7 +457,7 @@
             };
             dateGroups.push(newGroup);
             currentDateGroup = newGroup;
-            
+
             addOfficerRow(newGroup, true);
         }
 
@@ -461,7 +466,7 @@
                 addNewDateGroup();
                 return;
             }
-            
+
             const lastGroup = dateGroups[dateGroups.length - 1];
             addOfficerRow(lastGroup, false);
         }
@@ -472,25 +477,25 @@
             const row = document.createElement('tr');
             row.id = `row-${rowCounter}`;
             row.setAttribute('data-group-id', group.id);
-            
+
             if (!isFirstInGroup) {
                 row.classList.add('same-date-row');
             }
-            
+
             const officerIndex = group.officers.length;
             group.officers.push({ id: rowCounter, name: '', percentage: 0, salary: 0, weight: 1 });
-            
+
             row.innerHTML = `
                 <td class="text-center">${isFirstInGroup ? dateGroups.length : ''}</td>
                 <td class="date-column">
-                    ${isFirstInGroup ? 
-                        `<input type="date" class="form-control date-input" id="date-${group.id}" onchange="updateGroupDate(${group.id})">` : 
+                    ${isFirstInGroup ?
+                        `<input type="date" class="form-control date-input" id="date-${group.id}" onchange="updateGroupDate(${group.id})">` :
                         ''
                     }
                 </td>
                 <td class="samples-column">
-                    ${isFirstInGroup ? 
-                        `<input type="number" class="form-control samples-input" id="samples-${group.id}" min="1" onchange="updateGroupSamples(${group.id})">` : 
+                    ${isFirstInGroup ?
+                        `<input type="number" class="form-control samples-input" id="samples-${group.id}" min="1" onchange="updateGroupSamples(${group.id})">` :
                         ''
                     }
                 </td>
@@ -499,8 +504,8 @@
                         <option value="">Pilih Petugas</option>
                         ${employees.map(emp => `<option value="${emp}">${emp}</option>`).join('')}
                     </select>
-                    ${document.getElementById('divisionMode').value === 'weighted' ? 
-                        `<input type="number" class="form-control mt-1" id="weight-${rowCounter}" min="1" max="10" value="1" placeholder="Bobot" onchange="updateOfficerWeight(${rowCounter}, ${group.id})">` : 
+                    ${document.getElementById('divisionMode').value === 'weighted' ?
+                        `<input type="number" class="form-control mt-1" id="weight-${rowCounter}" min="1" max="10" value="1" placeholder="Bobot" onchange="updateOfficerWeight(${rowCounter}, ${group.id})">` :
                         ''
                     }
                 </td>
@@ -513,7 +518,7 @@
                     </button>
                 </td>
             `;
-            
+
             tbody.appendChild(row);
         }
 
@@ -539,7 +544,7 @@
             const group = dateGroups.find(g => g.id === groupId);
             const officerSelect = document.getElementById(`officer-${rowId}`);
             const officer = group.officers.find(o => o.id === rowId);
-            
+
             if (officer && officerSelect) {
                 officer.name = officerSelect.value;
                 updateCalculations();
@@ -550,7 +555,7 @@
             const group = dateGroups.find(g => g.id === groupId);
             const weightInput = document.getElementById(`weight-${rowId}`);
             const officer = group.officers.find(o => o.id === rowId);
-            
+
             if (officer && weightInput) {
                 officer.weight = parseInt(weightInput.value) || 1;
                 updateCalculations();
@@ -560,16 +565,16 @@
         function removeOfficerRow(rowId, groupId) {
             const row = document.getElementById(`row-${rowId}`);
             const group = dateGroups.find(g => g.id === groupId);
-            
+
             if (row && group) {
                 row.remove();
                 group.officers = group.officers.filter(o => o.id !== rowId);
-                
+
                 if (group.officers.length === 0) {
                     dateGroups = dateGroups.filter(g => g.id !== groupId);
                     renumberGroups();
                 }
-                
+
                 updateCalculations();
             }
         }
@@ -603,23 +608,23 @@
         function updateCalculations() {
             const ratePerSample = parseInt(document.getElementById('ratePerSample').value) || 2000;
             const divisionMode = document.getElementById('divisionMode').value;
-            
+
             dateGroups.forEach(group => {
                 const validOfficers = group.officers.filter(o => o.name && group.samples > 0);
                 const numOfficers = validOfficers.length;
-                
+
                 if (numOfficers > 0) {
                     let totalWeight = validOfficers.reduce((sum, officer) => sum + (officer.weight || 1), 0);
                     const totalAmount = ratePerSample * group.samples;
-                    
+
                     group.officers.forEach(officer => {
                         const percentageSpan = document.getElementById(`percentage-${officer.id}`);
                         const salarySpan = document.getElementById(`salary-${officer.id}`);
                         const totalSpan = document.getElementById(`total-${officer.id}`);
-                        
+
                         if (officer.name && group.samples > 0) {
                             let percentage, salary;
-                            
+
                             if (divisionMode === 'weighted') {
                                 percentage = ((officer.weight || 1) / totalWeight) * 100;
                                 salary = (percentage / 100) * totalAmount;
@@ -627,29 +632,29 @@
                                 percentage = 100 / numOfficers;
                                 salary = totalAmount / numOfficers;
                             }
-                            
+
                             officer.percentage = percentage;
                             officer.salary = salary;
-                            
+
                             if (percentageSpan) percentageSpan.textContent = percentage.toFixed(1) + '%';
                             if (salarySpan) salarySpan.textContent = formatCurrency(salary);
                             if (totalSpan) totalSpan.textContent = formatCurrency(salary);
                         } else {
                             officer.percentage = 0;
                             officer.salary = 0;
-                            
+
                             if (percentageSpan) percentageSpan.textContent = '0%';
                             if (salarySpan) salarySpan.textContent = 'Rp 0';
                             if (totalSpan) totalSpan.textContent = 'Rp 0';
                         }
                     });
-                    
+
                     group.totalAmount = validOfficers.reduce((sum, officer) => sum + officer.salary, 0);
                 } else {
                     group.totalAmount = 0;
                 }
             });
-            
+
             updateGrandTotal();
             updateSummaryTable();
             updateStatistics();
@@ -676,9 +681,9 @@
                                     totalSalary: 0
                                 };
                             }
-                            
+
                             const dateFormatted = formatDate(group.date, document.getElementById('dateFormat').value);
-                            
+
                             employeeData[officer.name].dates.push({
                                 date: dateFormatted,
                                 salary: officer.salary
@@ -691,16 +696,16 @@
 
             let empNo = 1;
             let summaryTotal = 0;
-            
+
             employees.forEach(employee => {
                 if (employeeData[employee]) {
                     const row = document.createElement('tr');
-                    
-                    const datesAndSalaries = employeeData[employee].dates.map(item => 
+
+                    const datesAndSalaries = employeeData[employee].dates.map(item =>
                         `${item.date}`
                     ).join('<br>');
-                    
-                    const salaries = employeeData[employee].dates.map(item => 
+
+                    const salaries = employeeData[employee].dates.map(item =>
                         formatCurrency(item.salary)
                     ).join('<br>');
 
@@ -712,13 +717,13 @@
                         <td class="currency-display"><strong>${formatCurrency(employeeData[employee].totalSalary)}</strong></td>
                         <td class="signature-cell"></td>
                     `;
-                    
+
                     summaryBody.appendChild(row);
                     summaryTotal += employeeData[employee].totalSalary;
                     empNo++;
                 }
             });
-            
+
             document.getElementById('summaryTotal').innerHTML = `<strong>${formatCurrency(summaryTotal)}</strong>`;
         }
 
@@ -727,7 +732,7 @@
             const totalPayment = dateGroups.reduce((sum, group) => sum + group.totalAmount, 0);
             const totalDates = dateGroups.filter(group => group.date && group.samples > 0).length;
             const activeEmployees = new Set();
-            
+
             dateGroups.forEach(group => {
                 group.officers.forEach(officer => {
                     if (officer.name && officer.salary > 0) {
@@ -735,18 +740,18 @@
                     }
                 });
             });
-            
+
             const avgPayment = activeEmployees.size > 0 ? totalPayment / activeEmployees.size : 0;
-            
+
             document.getElementById('totalSamples').textContent = totalSamples.toLocaleString('id-ID');
             document.getElementById('totalDates').textContent = totalDates;
             document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
             document.getElementById('activeStat').textContent = activeEmployees.size;
             document.getElementById('avgPayment').textContent = formatCurrency(avgPayment);
-            
+
             const status = totalSamples > 0 ? 'Data lengkap dan siap' : 'Belum ada data';
             document.getElementById('dataStatus').textContent = status;
-            
+
             const validationStatus = totalSamples > 0 && activeEmployees.size > 0 ? '✓ Data Valid' : '⚠ Data Belum Lengkap';
             document.getElementById('validationStatus').textContent = validationStatus;
         }
@@ -758,7 +763,7 @@
             const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
                           'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
             const monthName = months[parseInt(month) - 1];
-            
+
             // Main table data
             const mainTableData = [
                 ['PEMBAGIAN SEROLOGI'],
@@ -767,7 +772,7 @@
                 [],
                 ['NO', 'TGL SEROLOGI', 'JML SAMPLE', 'PETUGAS', '%', 'NOMINAL', 'JUMLAH']
             ];
-            
+
             dateGroups.forEach((group, groupIndex) => {
                 group.officers.forEach((officer, officerIndex) => {
                     if (officer.name) {
@@ -784,11 +789,11 @@
                     }
                 });
             });
-            
+
             mainTableData.push([]);
-            mainTableData.push(['JUMLAH', '', dateGroups.reduce((sum, g) => sum + g.samples, 0), '', '', '', 
+            mainTableData.push(['JUMLAH', '', dateGroups.reduce((sum, g) => sum + g.samples, 0), '', '', '',
                               dateGroups.reduce((sum, g) => sum + g.totalAmount, 0)]);
-            
+
             // Add signature sections to Excel
             mainTableData.push([]);
             mainTableData.push([]);
@@ -798,15 +803,15 @@
             mainTableData.push([]);
             mainTableData.push([]);
             mainTableData.push(['dr. Diyah Fitriyani, M.Kes.', '', '', '', '', 'Yuni Masdaroh, AMAK']);
-            
+
             const mainWs = XLSX.utils.aoa_to_sheet(mainTableData);
             XLSX.utils.book_append_sheet(wb, mainWs, 'Pembagian Serologi');
-            
+
             // Summary table
             const summaryTableData = [
                 ['NO', 'NAMA', 'TGL SEROLOGI', 'NOMINAL', 'JUMLAH', 'TANDA TANGAN']
             ];
-            
+
             const summaryRows = document.querySelectorAll('#summaryTableBody tr');
             summaryRows.forEach(row => {
                 const cells = row.querySelectorAll('td');
@@ -821,7 +826,7 @@
                     ]);
                 }
             });
-            
+
             // Add signature sections to summary sheet
             summaryTableData.push([]);
             summaryTableData.push([]);
@@ -831,10 +836,10 @@
             summaryTableData.push([]);
             summaryTableData.push([]);
             summaryTableData.push(['', '', '', '', '', 'Kepala']);
-            
+
             const summaryWs = XLSX.utils.aoa_to_sheet(summaryTableData);
             XLSX.utils.book_append_sheet(wb, summaryWs, 'Ringkasan Petugas');
-            
+
             XLSX.writeFile(wb, `Pembagian_Serologi_${monthValue}.xlsx`);
         }
 
@@ -844,20 +849,20 @@
             const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
                           'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
             const monthName = months[parseInt(month) - 1];
-            
+
             // Create CSV content similar to the template format
             let csvContent = '';
-            
+
             // Header section (side by side layout)
             csvContent += 'PEMBAGIAN SEROLOGI;;;;;;;;PEMBAGIAN SEROLOGI;;;;;\n';
             csvContent += 'UDD PMI KABUPATEN SEMARANG;;;;;;;;UDD PMI KABUPATEN SEMARANG;;;;;\n';
             csvContent += `BULAN ${monthName} ${year};;;;;;;;BULAN ${monthName} ${year};;;;;\n`;
             csvContent += ';;;;;;;;;;;;;\n';
-            
+
             // Table headers
             csvContent += 'NO;TGL SEROLOGI;JML SAMPLE;PETUGAS;PERHITUNGAN;;;;NO;NAMA;TGL SEROLOGI;NOMINAL;JUMLAH;TANDA TANGAN\n';
             csvContent += ';;;;%;NOMINAL;JUMLAH;;;;;;;\n';
-            
+
             // Get summary data first
             const employeeData = {};
             dateGroups.forEach(group => {
@@ -876,7 +881,7 @@
                     });
                 }
             });
-            
+
             // Prepare main data rows and summary rows
             const mainRows = [];
             dateGroups.forEach((group, groupIndex) => {
@@ -895,14 +900,14 @@
                     }
                 });
             });
-            
+
             const summaryRows = [];
             let empNo = 1;
             employees.forEach(employee => {
                 if (employeeData[employee]) {
                     const dates = employeeData[employee].dates.map(item => item.date);
                     const salaries = employeeData[employee].dates.map(item => formatCurrency(item.salary).replace(/\u00A0/g, ' '));
-                    
+
                     summaryRows.push([
                         empNo,
                         employee,
@@ -914,21 +919,21 @@
                     empNo++;
                 }
             });
-            
+
             // Combine main and summary data row by row
             const maxRows = Math.max(mainRows.length, summaryRows.length);
             for (let i = 0; i < maxRows; i++) {
                 const mainRow = mainRows[i] || ['', '', '', '', '', '', ''];
                 const summaryRow = summaryRows[i] || ['', '', '', '', '', ''];
-                
+
                 // Handle multi-line dates and salaries in summary
                 if (summaryRows[i] && Array.isArray(summaryRows[i][2])) {
                     const dates = summaryRows[i][2];
                     const salaries = summaryRows[i][3];
-                    
+
                     // First row with employee info
                     csvContent += `${mainRow.join(';')};;${summaryRow[0]};${summaryRow[1]};${dates[0] || ''};${salaries[0] || ''};${i === 0 ? summaryRow[4] : ''};${summaryRow[5]}\n`;
-                    
+
                     // Additional rows for multiple dates
                     for (let j = 1; j < Math.max(dates.length, salaries.length); j++) {
                         const emptyMain = ['', '', '', '', '', '', ''];
@@ -938,14 +943,14 @@
                     csvContent += `${mainRow.join(';')};;${summaryRow.join(';')}\n`;
                 }
             }
-            
+
             // Add totals
             const totalSamples = dateGroups.reduce((sum, g) => sum + g.samples, 0);
             const totalAmount = dateGroups.reduce((sum, g) => sum + g.totalAmount, 0);
-            
+
             csvContent += ';;;;;;;;;;;;;\n';
             csvContent += `JUMLAH;;${totalSamples};;; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ;;;;;; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ;\n`;
-            
+
             // Add signatures
             csvContent += ';;;;;;;;;;;;;\n';
             csvContent += `;;;;;;;;;;;Ungaran, ${monthName} ${year};;\n`;
@@ -957,7 +962,7 @@
             csvContent += ';;;;;;;;;;;;;\n';
             csvContent += ';;;;;;;;;;;dr Diyah Fitriyani, M.Kes.;;\n';
             csvContent += 'dr Diyah Fitriyani, M.Kes.;;;;;Yuni Masdaroh, AMAK;;;;;;Kepala;;\n';
-            
+
             // Download CSV
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
@@ -975,7 +980,7 @@
         updateMonthDisplay();
         updateCurrentRate();
         addNewDateGroup();
-        
+
         // Auto-save to localStorage every 30 seconds
         setInterval(() => {
             localStorage.setItem('serologiData', JSON.stringify({
@@ -984,7 +989,7 @@
                 lastSaved: new Date().toISOString()
             }));
         }, 30000);
-        
+
         // Load saved data on page load
         const savedData = localStorage.getItem('serologiData');
         if (savedData) {
