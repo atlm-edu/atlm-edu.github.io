@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Input Pembagian Serologi - Enhanced</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 15px 15px;
+        }
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .header-subtitle {
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .header-month {
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .section-title {
+            color: #dc3545;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dc3545;
+        }
+        .table-container {
+            margin-bottom: 30px;
+        }
+        .main-table {
+            border: 2px solid #dc3545;
+        }
+        .main-table th {
+            background-color: #dc3545;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .main-table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .summary-table {
+            border: 2px solid #28a745;
+        }
+        .summary-table th {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .summary-table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .total-row {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        .group-total-row {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            border-top: 2px solid #dee2e6;
+        }
+        .same-date-row {
+            border-left: 4px solid #007bff;
+        }
+        .btn-custom {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        .signature-cell {
+            height: 60px;
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa),
+                        linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            border: 1px solid #ddd;
+        }
+        .input-group-text {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        .currency-display {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .date-input {
+            text-align: left;
+        }
+        .samples-input {
+            text-align: right;
+        }
+        .btn-group-custom {
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .footer-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .signature-box {
+            text-align: center;
+            width: 300px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 80px;
+            padding-top: 5px;
+        }
+        .notes-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        .configuration-section {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        .config-title {
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <div class="header-title">PEMBAGIAN SEROLOGI</div>
+            <div class="header-subtitle">UDD PMI KABUPATEN SEMARANG</div>
+            <div class="header-month">
+                <input type="month" id="reportMonth" class="form-control d-inline-block w-auto" value="2025-04" onchange="updateMonthDisplay()">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Configuration Section -->
+        <div class="configuration-section">
+            <h5 class="config-title">
+                <i class="fas fa-cog"></i> Konfigurasi Sistem
+            </h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">Tarif per Sample (Rp)</label>
+                    <input type="number" id="ratePerSample" class="form-control" value="2000" min="1000" max="10000" onchange="updateAllCalculations()">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Mode Pembagian</label>
+                    <select id="divisionMode" class="form-select" onchange="updateAllCalculations()">
+                        <option value="equal">Pembagian Rata (Equal)</option>
+                        <option value="weighted">Pembagian Berbobot</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Format Tanggal Export</label>
+                    <select id="dateFormat" class="form-select">
+                        <option value="dd-mm-yyyy">DD-MM-YYYY</option>
+                        <option value="dd/mm/yyyy">DD/MM/YYYY</option>
+                        <option value="dd mmm yyyy">DD MMM YYYY</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <h4 class="section-title">
+                <i class="fas fa-table"></i> INPUT DATA PEMBAGIAN SEROLOGI
+            </h4>
+            
+            <div class="alert alert-info">
+                <strong>Panduan:</strong> Sistem akan menghitung pembagian otomatis berdasarkan jumlah petugas per tanggal. 
+                Tarif saat ini: <span id="currentRate">Rp 2.000</span> per sample.
+            </div>
+            
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table main-table table-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 50px;">NO</th>
+                                <th rowspan="2" style="width: 130px;">TGL SEROLOGI</th>
+                                <th rowspan="2" style="width: 100px;">JML SAMPLE</th>
+                                <th rowspan="2" style="width: 150px;">PETUGAS</th>
+                                <th colspan="3">PERHITUNGAN</th>
+                                <th rowspan="2" style="width: 100px;">AKSI</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 80px;">%</th>
+                                <th style="width: 120px;">NOMINAL</th>
+                                <th style="width: 120px;">JUMLAH</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mainTableBody">
+                            <!-- Rows will be dynamically added here -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="6" class="text-end"><strong>JUMLAH TOTAL:</strong></td>
+                                <td id="grandTotal" class="currency-display"><strong>Rp 0</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="btn-group-custom d-flex">
+                    <button class="btn btn-danger btn-custom" onclick="addNewDateGroup()">
+                        <i class="fas fa-plus"></i> Tambah Tanggal Baru
+                    </button>
+                    <button class="btn btn-outline-danger btn-custom" onclick="addOfficerToLastGroup()">
+                        <i class="fas fa-user-plus"></i> Tambah Petugas
+                    </button>
+                    <button class="btn btn-warning btn-custom" onclick="clearAllData()">
+                        <i class="fas fa-trash"></i> Hapus Semua Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <h4 class="section-title">
+                <i class="fas fa-users"></i> RINGKASAN PEMBAGIAN PER PETUGAS
+            </h4>
+            
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table summary-table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">NO</th>
+                                <th style="width: 180px;">NAMA</th>
+                                <th>TGL SEROLOGI</th>
+                                <th style="width: 120px;">NOMINAL</th>
+                                <th style="width: 120px;">JUMLAH</th>
+                                <th style="width: 150px;">TANDA TANGAN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTableBody">
+                            <!-- Summary rows will be dynamically generated -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="4" class="text-end"><strong>JUMLAH TOTAL:</strong></td>
+                                <td id="summaryTotal" class="currency-display"><strong>Rp 0</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <div class="text-center mb-4">
+                <div class="btn-group">
+                    <button class="btn btn-success btn-custom btn-lg" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Export ke Excel
+                    </button>
+                    <button class="btn btn-info btn-custom btn-lg" onclick="exportToCSV()">
+                        <i class="fas fa-file-csv"></i> Export ke CSV (Format Template)
+                    </button>
+                    <button class="btn btn-secondary btn-custom btn-lg" onclick="printReport()">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div><strong>Mengetahui</strong></div>
+                    <div><strong>Kepala UDD</strong></div>
+                    <div class="signature-line">
+                        <strong>dr. Diyah Fitriyani, M.Kes.</strong>
+                    </div>
+                </div>
+                <div class="signature-box">
+                    <div id="currentLocation">Ungaran, <span id="currentDate"></span></div>
+                    <div><strong>Koordinator Pengelolaan Darah</strong></div>
+                    <div class="signature-line">
+                        <strong>Yuni Masdaroh, AMAK</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <h6><strong>STATISTIK & CATATAN:</strong></h6>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div><strong>Jumlah Sample Darah:</strong></div>
+                        <div>Total Keseluruhan: <span id="totalSamples">0</span></div>
+                        <div>Jumlah Tanggal: <span id="totalDates">0</span></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div><strong>Status Data:</strong></div>
+                        <div id="dataStatus">Siap untuk review</div>
+                        <div>Petugas Aktif: <span id="activeStat">0</span></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div><strong>Total Pembayaran:</strong></div>
+                        <div id="totalPayment" class="currency-display">Rp 0</div>
+                        <div>Rata-rata per Petugas: <span id="avgPayment">Rp 0</span></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div><strong>Validasi:</strong></div>
+                        <div id="validationStatus">✓ Data Valid</div>
+                        <div>Last Update: <span id="lastUpdate">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        const employees = [
+            'Yuni M', 'Siti Rofiah', 'Sundari', 'Putut K.', 'Nanang S.',
+            'Arfita K.', 'Ajrina K.H.', 'Indra Jati K.', 'Akwilla Bella', 'Nova',
+            'Dini Retno'
+        ];
+
+        let rowCounter = 0;
+        let dateGroups = [];
+        let currentDateGroup = null;
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function formatDate(dateString, format = 'dd-mm-yyyy') {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            
+            const months = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+                'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'
+            ];
+            
+            switch(format) {
+                case 'dd/mm/yyyy': return `${day}/${month}/${year}`;
+                case 'dd mmm yyyy': return `${day} ${months[date.getMonth()]} ${year}`;
+                default: return `${day}-${month}-${year}`;
+            }
+        }
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById('currentDate').textContent = dateStr;
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('id-ID');
+        }
+
+        function updateMonthDisplay() {
+            const monthInput = document.getElementById('reportMonth');
+            const [year, month] = monthInput.value.split('-');
+            const months = [
+                'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+                'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+            ];
+            const monthName = months[parseInt(month) - 1];
+            document.querySelector('.header-month').innerHTML = `
+                <input type="month" id="reportMonth" class="form-control d-inline-block w-auto" value="${monthInput.value}" onchange="updateMonthDisplay()">
+            `;
+        }
+
+        function updateCurrentRate() {
+            const rate = document.getElementById('ratePerSample').value;
+            document.getElementById('currentRate').textContent = formatCurrency(rate);
+        }
+
+        function addNewDateGroup() {
+            const newGroup = {
+                id: Date.now(),
+                date: '',
+                samples: 0,
+                officers: [],
+                totalAmount: 0
+            };
+            dateGroups.push(newGroup);
+            currentDateGroup = newGroup;
+            
+            addOfficerRow(newGroup, true);
+        }
+
+        function addOfficerToLastGroup() {
+            if (dateGroups.length === 0) {
+                addNewDateGroup();
+                return;
+            }
+            
+            const lastGroup = dateGroups[dateGroups.length - 1];
+            addOfficerRow(lastGroup, false);
+        }
+
+        function addOfficerRow(group, isFirstInGroup) {
+            rowCounter++;
+            const tbody = document.getElementById('mainTableBody');
+            const row = document.createElement('tr');
+            row.id = `row-${rowCounter}`;
+            row.setAttribute('data-group-id', group.id);
+            
+            if (!isFirstInGroup) {
+                row.classList.add('same-date-row');
+            }
+            
+            const officerIndex = group.officers.length;
+            group.officers.push({ id: rowCounter, name: '', percentage: 0, salary: 0, weight: 1 });
+            
+            row.innerHTML = `
+                <td class="text-center">${isFirstInGroup ? dateGroups.length : ''}</td>
+                <td class="date-column">
+                    ${isFirstInGroup ? 
+                        `<input type="date" class="form-control date-input" id="date-${group.id}" onchange="updateGroupDate(${group.id})">` : 
+                        ''
+                    }
+                </td>
+                <td class="samples-column">
+                    ${isFirstInGroup ? 
+                        `<input type="number" class="form-control samples-input" id="samples-${group.id}" min="1" onchange="updateGroupSamples(${group.id})">` : 
+                        ''
+                    }
+                </td>
+                <td>
+                    <select class="form-select" id="officer-${rowCounter}" onchange="updateOfficer(${rowCounter}, ${group.id})">
+                        <option value="">Pilih Petugas</option>
+                        ${employees.map(emp => `<option value="${emp}">${emp}</option>`).join('')}
+                    </select>
+                    ${document.getElementById('divisionMode').value === 'weighted' ? 
+                        `<input type="number" class="form-control mt-1" id="weight-${rowCounter}" min="1" max="10" value="1" placeholder="Bobot" onchange="updateOfficerWeight(${rowCounter}, ${group.id})">` : 
+                        ''
+                    }
+                </td>
+                <td class="text-center"><span id="percentage-${rowCounter}">0%</span></td>
+                <td class="text-end currency-display"><span id="salary-${rowCounter}">Rp 0</span></td>
+                <td class="text-end currency-display"><span id="total-${rowCounter}">Rp 0</span></td>
+                <td>
+                    <button class="btn btn-outline-danger btn-sm" onclick="removeOfficerRow(${rowCounter}, ${group.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        }
+
+        function updateGroupDate(groupId) {
+            const group = dateGroups.find(g => g.id === groupId);
+            const dateInput = document.getElementById(`date-${groupId}`);
+            if (group && dateInput) {
+                group.date = dateInput.value;
+                updateCalculations();
+            }
+        }
+
+        function updateGroupSamples(groupId) {
+            const group = dateGroups.find(g => g.id === groupId);
+            const samplesInput = document.getElementById(`samples-${groupId}`);
+            if (group && samplesInput) {
+                group.samples = parseInt(samplesInput.value) || 0;
+                updateCalculations();
+            }
+        }
+
+        function updateOfficer(rowId, groupId) {
+            const group = dateGroups.find(g => g.id === groupId);
+            const officerSelect = document.getElementById(`officer-${rowId}`);
+            const officer = group.officers.find(o => o.id === rowId);
+            
+            if (officer && officerSelect) {
+                officer.name = officerSelect.value;
+                updateCalculations();
+            }
+        }
+
+        function updateOfficerWeight(rowId, groupId) {
+            const group = dateGroups.find(g => g.id === groupId);
+            const weightInput = document.getElementById(`weight-${rowId}`);
+            const officer = group.officers.find(o => o.id === rowId);
+            
+            if (officer && weightInput) {
+                officer.weight = parseInt(weightInput.value) || 1;
+                updateCalculations();
+            }
+        }
+
+        function removeOfficerRow(rowId, groupId) {
+            const row = document.getElementById(`row-${rowId}`);
+            const group = dateGroups.find(g => g.id === groupId);
+            
+            if (row && group) {
+                row.remove();
+                group.officers = group.officers.filter(o => o.id !== rowId);
+                
+                if (group.officers.length === 0) {
+                    dateGroups = dateGroups.filter(g => g.id !== groupId);
+                    renumberGroups();
+                }
+                
+                updateCalculations();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan.')) {
+                dateGroups = [];
+                rowCounter = 0;
+                document.getElementById('mainTableBody').innerHTML = '';
+                updateCalculations();
+            }
+        }
+
+        function renumberGroups() {
+            dateGroups.forEach((group, index) => {
+                const firstRow = document.querySelector(`tr[data-group-id="${group.id}"]:not(.same-date-row)`);
+                if (firstRow) {
+                    const noCell = firstRow.querySelector('td:first-child');
+                    if (noCell) {
+                        noCell.textContent = index + 1;
+                    }
+                }
+            });
+        }
+
+        function updateAllCalculations() {
+            updateCurrentRate();
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            const ratePerSample = parseInt(document.getElementById('ratePerSample').value) || 2000;
+            const divisionMode = document.getElementById('divisionMode').value;
+            
+            dateGroups.forEach(group => {
+                const validOfficers = group.officers.filter(o => o.name && group.samples > 0);
+                const numOfficers = validOfficers.length;
+                
+                if (numOfficers > 0) {
+                    let totalWeight = validOfficers.reduce((sum, officer) => sum + (officer.weight || 1), 0);
+                    const totalAmount = ratePerSample * group.samples;
+                    
+                    group.officers.forEach(officer => {
+                        const percentageSpan = document.getElementById(`percentage-${officer.id}`);
+                        const salarySpan = document.getElementById(`salary-${officer.id}`);
+                        const totalSpan = document.getElementById(`total-${officer.id}`);
+                        
+                        if (officer.name && group.samples > 0) {
+                            let percentage, salary;
+                            
+                            if (divisionMode === 'weighted') {
+                                percentage = ((officer.weight || 1) / totalWeight) * 100;
+                                salary = (percentage / 100) * totalAmount;
+                            } else {
+                                percentage = 100 / numOfficers;
+                                salary = totalAmount / numOfficers;
+                            }
+                            
+                            officer.percentage = percentage;
+                            officer.salary = salary;
+                            
+                            if (percentageSpan) percentageSpan.textContent = percentage.toFixed(1) + '%';
+                            if (salarySpan) salarySpan.textContent = formatCurrency(salary);
+                            if (totalSpan) totalSpan.textContent = formatCurrency(salary);
+                        } else {
+                            officer.percentage = 0;
+                            officer.salary = 0;
+                            
+                            if (percentageSpan) percentageSpan.textContent = '0%';
+                            if (salarySpan) salarySpan.textContent = 'Rp 0';
+                            if (totalSpan) totalSpan.textContent = 'Rp 0';
+                        }
+                    });
+                    
+                    group.totalAmount = validOfficers.reduce((sum, officer) => sum + officer.salary, 0);
+                } else {
+                    group.totalAmount = 0;
+                }
+            });
+            
+            updateGrandTotal();
+            updateSummaryTable();
+            updateStatistics();
+        }
+
+        function updateGrandTotal() {
+            const grandTotal = dateGroups.reduce((sum, group) => sum + group.totalAmount, 0);
+            document.getElementById('grandTotal').innerHTML = `<strong>${formatCurrency(grandTotal)}</strong>`;
+        }
+
+        function updateSummaryTable() {
+            const summaryBody = document.getElementById('summaryTableBody');
+            summaryBody.innerHTML = '';
+
+            const employeeData = {};
+
+            dateGroups.forEach(group => {
+                if (group.date && group.samples > 0) {
+                    group.officers.forEach(officer => {
+                        if (officer.name && officer.salary > 0) {
+                            if (!employeeData[officer.name]) {
+                                employeeData[officer.name] = {
+                                    dates: [],
+                                    totalSalary: 0
+                                };
+                            }
+                            
+                            const dateFormatted = formatDate(group.date, document.getElementById('dateFormat').value);
+                            
+                            employeeData[officer.name].dates.push({
+                                date: dateFormatted,
+                                salary: officer.salary
+                            });
+                            employeeData[officer.name].totalSalary += officer.salary;
+                        }
+                    });
+                }
+            });
+
+            let empNo = 1;
+            let summaryTotal = 0;
+            
+            employees.forEach(employee => {
+                if (employeeData[employee]) {
+                    const row = document.createElement('tr');
+                    
+                    const datesAndSalaries = employeeData[employee].dates.map(item => 
+                        `${item.date}`
+                    ).join('<br>');
+                    
+                    const salaries = employeeData[employee].dates.map(item => 
+                        formatCurrency(item.salary)
+                    ).join('<br>');
+
+                    row.innerHTML = `
+                        <td>${empNo}</td>
+                        <td><strong>${employee}</strong></td>
+                        <td>${datesAndSalaries}</td>
+                        <td class="currency-display">${salaries}</td>
+                        <td class="currency-display"><strong>${formatCurrency(employeeData[employee].totalSalary)}</strong></td>
+                        <td class="signature-cell"></td>
+                    `;
+                    
+                    summaryBody.appendChild(row);
+                    summaryTotal += employeeData[employee].totalSalary;
+                    empNo++;
+                }
+            });
+            
+            document.getElementById('summaryTotal').innerHTML = `<strong>${formatCurrency(summaryTotal)}</strong>`;
+        }
+
+        function updateStatistics() {
+            const totalSamples = dateGroups.reduce((sum, group) => sum + group.samples, 0);
+            const totalPayment = dateGroups.reduce((sum, group) => sum + group.totalAmount, 0);
+            const totalDates = dateGroups.filter(group => group.date && group.samples > 0).length;
+            const activeEmployees = new Set();
+            
+            dateGroups.forEach(group => {
+                group.officers.forEach(officer => {
+                    if (officer.name && officer.salary > 0) {
+                        activeEmployees.add(officer.name);
+                    }
+                });
+            });
+            
+            const avgPayment = activeEmployees.size > 0 ? totalPayment / activeEmployees.size : 0;
+            
+            document.getElementById('totalSamples').textContent = totalSamples.toLocaleString('id-ID');
+            document.getElementById('totalDates').textContent = totalDates;
+            document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
+            document.getElementById('activeStat').textContent = activeEmployees.size;
+            document.getElementById('avgPayment').textContent = formatCurrency(avgPayment);
+            
+            const status = totalSamples > 0 ? 'Data lengkap dan siap' : 'Belum ada data';
+            document.getElementById('dataStatus').textContent = status;
+            
+            const validationStatus = totalSamples > 0 && activeEmployees.size > 0 ? '✓ Data Valid' : '⚠ Data Belum Lengkap';
+            document.getElementById('validationStatus').textContent = validationStatus;
+        }
+
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            const monthValue = document.getElementById('reportMonth').value;
+            const [year, month] = monthValue.split('-');
+            const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+                          'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
+            const monthName = months[parseInt(month) - 1];
+            
+            // Main table data
+            const mainTableData = [
+                ['PEMBAGIAN SEROLOGI'],
+                ['UDD PMI KABUPATEN SEMARANG'],
+                [`BULAN ${monthName} ${year}`],
+                [],
+                ['NO', 'TGL SEROLOGI', 'JML SAMPLE', 'PETUGAS', '%', 'NOMINAL', 'JUMLAH']
+            ];
+            
+            dateGroups.forEach((group, groupIndex) => {
+                group.officers.forEach((officer, officerIndex) => {
+                    if (officer.name) {
+                        const dateFormatted = group.date ? formatDate(group.date, document.getElementById('dateFormat').value) : '';
+                        mainTableData.push([
+                            officerIndex === 0 ? groupIndex + 1 : '',
+                            officerIndex === 0 ? dateFormatted : '',
+                            officerIndex === 0 ? group.samples : '',
+                            officer.name,
+                            officer.percentage.toFixed(1) + '%',
+                            officer.salary,
+                            officerIndex === group.officers.filter(o => o.name).length - 1 ? group.totalAmount : ''
+                        ]);
+                    }
+                });
+            });
+            
+            mainTableData.push([]);
+            mainTableData.push(['JUMLAH', '', dateGroups.reduce((sum, g) => sum + g.samples, 0), '', '', '', 
+                              dateGroups.reduce((sum, g) => sum + g.totalAmount, 0)]);
+            
+            // Add signature sections to Excel
+            mainTableData.push([]);
+            mainTableData.push([]);
+            mainTableData.push(['Mengetahui', '', '', '', '', `Ungaran, ${new Date().getDate()} ${monthName} ${year}`]);
+            mainTableData.push(['Kepala UDD', '', '', '', '', 'Koordinator Pengelolaan Darah']);
+            mainTableData.push([]);
+            mainTableData.push([]);
+            mainTableData.push([]);
+            mainTableData.push(['dr. Diyah Fitriyani, M.Kes.', '', '', '', '', 'Yuni Masdaroh, AMAK']);
+            
+            const mainWs = XLSX.utils.aoa_to_sheet(mainTableData);
+            XLSX.utils.book_append_sheet(wb, mainWs, 'Pembagian Serologi');
+            
+            // Summary table
+            const summaryTableData = [
+                ['NO', 'NAMA', 'TGL SEROLOGI', 'NOMINAL', 'JUMLAH', 'TANDA TANGAN']
+            ];
+            
+            const summaryRows = document.querySelectorAll('#summaryTableBody tr');
+            summaryRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 5) {
+                    summaryTableData.push([
+                        cells[0].textContent.trim(),
+                        cells[1].textContent.trim(),
+                        cells[2].textContent.trim().replace(/<br>/g, '\n'),
+                        cells[3].textContent.trim().replace(/<br>/g, '\n'),
+                        cells[4].textContent.trim(),
+                        ''
+                    ]);
+                }
+            });
+            
+            // Add signature sections to summary sheet
+            summaryTableData.push([]);
+            summaryTableData.push([]);
+            summaryTableData.push(['', '', '', '', '', 'PALANG MERAH INDONESIA']);
+            summaryTableData.push(['', '', '', '', '', 'Kabupaten Semarang']);
+            summaryTableData.push(['', '', '', '', '', 'Unit Donor Darah']);
+            summaryTableData.push([]);
+            summaryTableData.push([]);
+            summaryTableData.push(['', '', '', '', '', 'Kepala']);
+            
+            const summaryWs = XLSX.utils.aoa_to_sheet(summaryTableData);
+            XLSX.utils.book_append_sheet(wb, summaryWs, 'Ringkasan Petugas');
+            
+            XLSX.writeFile(wb, `Pembagian_Serologi_${monthValue}.xlsx`);
+        }
+
+        function exportToCSV() {
+            const monthValue = document.getElementById('reportMonth').value;
+            const [year, month] = monthValue.split('-');
+            const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+                          'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
+            const monthName = months[parseInt(month) - 1];
+            
+            // Create CSV content similar to the template format
+            let csvContent = '';
+            
+            // Header section (side by side layout)
+            csvContent += 'PEMBAGIAN SEROLOGI;;;;;;;;PEMBAGIAN SEROLOGI;;;;;\n';
+            csvContent += 'UDD PMI KABUPATEN SEMARANG;;;;;;;;UDD PMI KABUPATEN SEMARANG;;;;;\n';
+            csvContent += `BULAN ${monthName} ${year};;;;;;;;BULAN ${monthName} ${year};;;;;\n`;
+            csvContent += ';;;;;;;;;;;;;\n';
+            
+            // Table headers
+            csvContent += 'NO;TGL SEROLOGI;JML SAMPLE;PETUGAS;PERHITUNGAN;;;;NO;NAMA;TGL SEROLOGI;NOMINAL;JUMLAH;TANDA TANGAN\n';
+            csvContent += ';;;;%;NOMINAL;JUMLAH;;;;;;;\n';
+            
+            // Get summary data first
+            const employeeData = {};
+            dateGroups.forEach(group => {
+                if (group.date && group.samples > 0) {
+                    group.officers.forEach(officer => {
+                        if (officer.name && officer.salary > 0) {
+                            if (!employeeData[officer.name]) {
+                                employeeData[officer.name] = { dates: [], totalSalary: 0 };
+                            }
+                            employeeData[officer.name].dates.push({
+                                date: formatDate(group.date, document.getElementById('dateFormat').value),
+                                salary: officer.salary
+                            });
+                            employeeData[officer.name].totalSalary += officer.salary;
+                        }
+                    });
+                }
+            });
+            
+            // Prepare main data rows and summary rows
+            const mainRows = [];
+            dateGroups.forEach((group, groupIndex) => {
+                group.officers.forEach((officer, officerIndex) => {
+                    if (officer.name) {
+                        const dateFormatted = group.date ? formatDate(group.date, document.getElementById('dateFormat').value) : '';
+                        mainRows.push([
+                            officerIndex === 0 ? groupIndex + 1 : '',
+                            officerIndex === 0 ? dateFormatted : '',
+                            officerIndex === 0 ? group.samples : '',
+                            officer.name,
+                            officer.percentage.toFixed(0),
+                            formatCurrency(officer.salary).replace(/\u00A0/g, ' '),
+                            officerIndex === group.officers.filter(o => o.name).length - 1 ? formatCurrency(group.totalAmount).replace(/\u00A0/g, ' ') : ''
+                        ]);
+                    }
+                });
+            });
+            
+            const summaryRows = [];
+            let empNo = 1;
+            employees.forEach(employee => {
+                if (employeeData[employee]) {
+                    const dates = employeeData[employee].dates.map(item => item.date);
+                    const salaries = employeeData[employee].dates.map(item => formatCurrency(item.salary).replace(/\u00A0/g, ' '));
+                    
+                    summaryRows.push([
+                        empNo,
+                        employee,
+                        dates,
+                        salaries,
+                        formatCurrency(employeeData[employee].totalSalary).replace(/\u00A0/g, ' '),
+                        empNo
+                    ]);
+                    empNo++;
+                }
+            });
+            
+            // Combine main and summary data row by row
+            const maxRows = Math.max(mainRows.length, summaryRows.length);
+            for (let i = 0; i < maxRows; i++) {
+                const mainRow = mainRows[i] || ['', '', '', '', '', '', ''];
+                const summaryRow = summaryRows[i] || ['', '', '', '', '', ''];
+                
+                // Handle multi-line dates and salaries in summary
+                if (summaryRows[i] && Array.isArray(summaryRows[i][2])) {
+                    const dates = summaryRows[i][2];
+                    const salaries = summaryRows[i][3];
+                    
+                    // First row with employee info
+                    csvContent += `${mainRow.join(';')};;${summaryRow[0]};${summaryRow[1]};${dates[0] || ''};${salaries[0] || ''};${i === 0 ? summaryRow[4] : ''};${summaryRow[5]}\n`;
+                    
+                    // Additional rows for multiple dates
+                    for (let j = 1; j < Math.max(dates.length, salaries.length); j++) {
+                        const emptyMain = ['', '', '', '', '', '', ''];
+                        csvContent += `${emptyMain.join(';')};;;${dates[j] || ''};${salaries[j] || ''};${j === dates.length - 1 ? summaryRow[4] : ''};;\n`;
+                    }
+                } else {
+                    csvContent += `${mainRow.join(';')};;${summaryRow.join(';')}\n`;
+                }
+            }
+            
+            // Add totals
+            const totalSamples = dateGroups.reduce((sum, g) => sum + g.samples, 0);
+            const totalAmount = dateGroups.reduce((sum, g) => sum + g.totalAmount, 0);
+            
+            csvContent += ';;;;;;;;;;;;;\n';
+            csvContent += `JUMLAH;;${totalSamples};;; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ;;;;;; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ; ${formatCurrency(totalAmount).replace(/\u00A0/g, ' ')} ;\n`;
+            
+            // Add signatures
+            csvContent += ';;;;;;;;;;;;;\n';
+            csvContent += `;;;;;;;;;;;Ungaran, ${monthName} ${year};;\n`;
+            csvContent += ';;;;;;;;;;;PALANG MERAH INDONESIA;;\n';
+            csvContent += `Mengetahui;;;;;Ungaran, ${monthName} ${year};;;;;;Kabupaten Semarang;;\n`;
+            csvContent += 'Kepala UDD;;;;;Koordinator Pengelolaan Darah;;;;;;Unit Donor Darah;;\n';
+            csvContent += ';;;;;;;;;;;;;\n';
+            csvContent += ';;;;;;;;;;;;;\n';
+            csvContent += ';;;;;;;;;;;;;\n';
+            csvContent += ';;;;;;;;;;;dr Diyah Fitriyani, M.Kes.;;\n';
+            csvContent += 'dr Diyah Fitriyani, M.Kes.;;;;;Yuni Masdaroh, AMAK;;;;;;Kepala;;\n';
+            
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Pembagian_Serologi_${monthValue}.csv`;
+            link.click();
+        }
+
+        function printReport() {
+            window.print();
+        }
+
+        // Initialize
+        updateCurrentDate();
+        updateMonthDisplay();
+        updateCurrentRate();
+        addNewDateGroup();
+        
+        // Auto-save to localStorage every 30 seconds
+        setInterval(() => {
+            localStorage.setItem('serologiData', JSON.stringify({
+                dateGroups,
+                rowCounter,
+                lastSaved: new Date().toISOString()
+            }));
+        }, 30000);
+        
+        // Load saved data on page load
+        const savedData = localStorage.getItem('serologiData');
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                if (parsed.dateGroups && parsed.dateGroups.length > 0) {
+                    if (confirm('Ditemukan data tersimpan. Muat data tersebut?')) {
+                        // Load saved data logic would go here
+                        console.log('Loading saved data...');
+                    }
+                }
+            } catch (e) {
+                console.log('Error loading saved data');
+            }
+        }
+    </script>
+</body>
+</html>

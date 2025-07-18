@@ -1279,608 +1279,457 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Global variables
-        let currentUser = {
-            type: '',
-            name: '',
-            role: ''
-        };
-
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeEventListeners();
-            initializeCharts();
-        });
-
-        // Event Listeners
-        function initializeEventListeners() {
-            // Login form
-            document.getElementById('loginForm').addEventListener('submit', handleLogin);
-
-            // Register form
-            document.getElementById('registerForm').addEventListener('submit', handleRegister);
-
-            // Show register screen
-            document.getElementById('showRegisterBtn').addEventListener('click', () => {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('registerScreen').classList.remove('hidden');
-            });
-
-            // Show login screen
-            document.getElementById('showLoginBtn').addEventListener('click', () => {
-                document.getElementById('registerScreen').classList.add('hidden');
-                document.getElementById('loginScreen').classList.remove('hidden');
-            });
-
-            // Sidebar navigation
-            document.querySelectorAll('[data-page]').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const page = e.currentTarget.dataset.page;
-                    showPage(page);
-                    updateActiveNavItem(e.currentTarget);
-                });
-            });
-
-            // Sidebar toggle for mobile
-            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-
-            // Logout
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-
-            // Modal controls
-            document.getElementById('newExperimentBtn').addEventListener('click', () => {
-                document.getElementById('experimentModal').classList.remove('hidden');
-            });
-
-            document.getElementById('closeExperimentModal').addEventListener('click', () => {
-                document.getElementById('experimentModal').classList.add('hidden');
-            });
-
-            document.getElementById('cancelExperiment').addEventListener('click', () => {
-                document.getElementById('experimentModal').classList.add('hidden');
-            });
-
-            // Close modal when clicking outside
-            document.getElementById('experimentModal').addEventListener('click', (e) => {
-                if (e.target.id === 'experimentModal') {
-                    document.getElementById('experimentModal').classList.add('hidden');
-                }
-            });
-        }
-
-        // Google Sheets API configuration
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzQ-pDGAwWAp5qHqjlH8KX9jbbOOKSJgooATVbeyOwGZH8E3MktCqft8w09f6Dhz8TFYA/exec';
-
-        // Utility functions for alerts
-        function showAlert(message, type = 'error') {
-            const alertDiv = document.getElementById('loginAlert');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
-            alertDiv.classList.remove('hidden');
-
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                alertDiv.classList.add('hidden');
-            }, 5000);
-        }
-
-        function hideAlert() {
-            document.getElementById('loginAlert').classList.add('hidden');
-        }
-
-        // Google Sheets API functions
-        async function makeAPIRequest(data) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.text();
-                return JSON.parse(result);
-            } catch (error) {
-                console.error('API Error:', error);
-                throw new Error('Network error occurred. Please try again.');
-            }
-        }
-
-        async function authenticateUser(email, password, userType) {
-            return await makeAPIRequest({
-                action: 'authenticate',
-                email: email,
-                password: password,
-                userType: userType
-            });
-        }
-
-        async function getAllUsers() {
-            return await makeAPIRequest({
-                action: 'getAllUsers'
-            });
-        }
-
-        async function addUser(userData) {
-            return await makeAPIRequest({
-                action: 'addUser',
-                userData: userData
-            });
-        }
-
-        async function updateUser(userId, updates) {
-            return await makeAPIRequest({
-                action: 'updateUser',
-                userId: userId,
-                updates: updates
-            });
-        }
-
-        // Handle registration form submission
-        async function handleRegister(e) {
-            e.preventDefault();
-            hideRegisterAlert();
-
-            const firstName = document.getElementById('regFirstName').value;
-            const lastName = document.getElementById('regLastName').value;
-            const email = document.getElementById('regEmail').value;
-            const userType = document.getElementById('regUserType').value;
-            const institution = document.getElementById('regInstitution').value;
-            const department = document.getElementById('regDepartment').value;
-            const password = document.getElementById('regPassword').value;
-            const confirmPassword = document.getElementById('regConfirmPassword').value;
-            const agreeTerms = document.getElementById('agreeTerms').checked;
-            const registerBtn = document.getElementById('registerBtn');
-
-            // Validation
-            if (!firstName || !lastName || !email || !userType || !institution || !password || !confirmPassword) {
-                showRegisterAlert('Please fill in all required fields', 'error');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showRegisterAlert('Passwords do not match', 'error');
-                return;
-            }
-
-            if (password.length < 6) {
-                showRegisterAlert('Password must be at least 6 characters long', 'error');
-                return;
-            }
-
-            if (!agreeTerms) {
-                showRegisterAlert('Please agree to the terms and conditions', 'error');
-                return;
-            }
-
-            // Show loading state
-            const originalText = registerBtn.innerHTML;
-            registerBtn.innerHTML = '<div class="loading-spinner"></div>Registering...';
-            registerBtn.disabled = true;
-
-            try {
-                // Try to register with Google Sheets API
-                const userData = {
-                    firstName: firstName,
-                    lastName: lastName,
-                    name: `${firstName} ${lastName}`,
-                    email: email,
-                    password: password,
-                    type: userType,
-                    role: getRoleFromType(userType),
-                    institution: institution,
-                    department: department,
-                    campus: userType.includes('internal') ? 'Main Campus' : institution,
-                    status: 'pending', // Pending approval
-                    registeredAt: new Date().toISOString()
-                };
-
-                const result = await addUser(userData);
-
-                if (result.success) {
-                    showRegisterAlert('Registration successful! Your account is pending approval by laboratory management. You will be notified via email once approved.', 'success');
-
-                    // Reset form after successful registration
-                    setTimeout(() => {
-                        document.getElementById('registerForm').reset();
-                        document.getElementById('registerScreen').classList.add('hidden');
-                        document.getElementById('loginScreen').classList.remove('hidden');
-                        showAlert('Registration submitted successfully. Please wait for approval.', 'info');
-                    }, 3000);
-
-                } else {
-                    showRegisterAlert(result.message || 'Registration failed. Please try again.', 'error');
-                }
-            } catch (error) {
-                // Demo mode fallback
-                console.log('API unavailable, simulating registration');
-
-                // Check if email already exists in demo credentials
-                const demoEmails = ['admin@lab.edu', 'student@lab.edu', 'researcher@lab.edu'];
-
-                if (demoEmails.includes(email)) {
-                    showRegisterAlert('Email already exists. Please use a different email address.', 'error');
-                } else {
-                    showRegisterAlert('Registration successful! In demo mode, you can now use these credentials to login after approval.', 'success');
-
-                    // Reset form after successful registration
-                    setTimeout(() => {
-                        document.getElementById('registerForm').reset();
-                        document.getElementById('registerScreen').classList.add('hidden');
-                        document.getElementById('loginScreen').classList.remove('hidden');
-                        showAlert('Demo registration completed. Please contact admin for login credentials.', 'info');
-                    }, 3000);
-                }
-            } finally {
-                // Reset button state
-                registerBtn.innerHTML = originalText;
-                registerBtn.disabled = false;
-            }
-        }
-
-        // Utility function to convert user type to role
-        function getRoleFromType(userType) {
-            const roleMap = {
-                'lab_manager': 'Lab Manager',
-                'internal_student': 'Internal Student',
-                'external_student': 'External Student',
-                'internal_researcher': 'Internal Researcher',
-                'external_researcher': 'External Researcher'
+        <script>
+            // Global variables
+            let currentUser = {
+                type: '',
+                name: '',
+                role: ''
             };
-            return roleMap[userType] || 'Unknown Role';
-        }
 
-        // Utility functions for register alerts
-        function showRegisterAlert(message, type = 'error') {
-            const alertDiv = document.getElementById('registerAlert');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
-            alertDiv.classList.remove('hidden');
+            // Initialize the application
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeEventListeners();
+                initializeCharts();
+            });
 
-            // Auto-hide after 8 seconds for success messages
-            const timeout = type === 'success' ? 8000 : 5000;
-            setTimeout(() => {
-                alertDiv.classList.add('hidden');
-            }, timeout);
-        }
+            // Event Listeners
+            function initializeEventListeners() {
+                // Login form
+                document.getElementById('loginForm').addEventListener('submit', handleLogin);
 
-        function hideRegisterAlert() {
-            document.getElementById('registerAlert').classList.add('hidden');
-        }
+                // Register form
+                document.getElementById('registerForm').addEventListener('submit', handleRegister);
 
-        // Handle login form submission with Google Sheets integration
-        async function handleLogin(e) {
-            e.preventDefault();
-            hideAlert();
-
-            const userType = document.getElementById('userType').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const loginBtn = document.querySelector('#loginBtn') || document.querySelector('button[type="submit"]');
-
-            if (!userType || !email || !password) {
-                showAlert('Please fill in all fields', 'error');
-                return;
-            }
-
-            // Show loading state
-            const originalText = loginBtn.innerHTML;
-            loginBtn.innerHTML = '<div class="loading-spinner"></div>Signing in...';
-            loginBtn.disabled = true;
-
-            try {
-                // Authenticate with Google Sheets
-                const result = await authenticateUser(email, password, userType);
-
-                if (result.success) {
-                    // Set current user data
-                    currentUser = result.user;
-
-                    // Update UI with user info
-                    document.getElementById('userName').textContent = currentUser.name;
-                    document.getElementById('userRole').textContent = currentUser.role;
-
-                    // Hide login screen and show dashboard
+                // Show register screen
+                document.getElementById('showRegisterBtn').addEventListener('click', () => {
                     document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('dashboard').classList.remove('hidden');
+                    document.getElementById('registerScreen').classList.remove('hidden');
+                });
 
-                    // Show user management for lab managers only
-                    if (currentUser.type === 'lab_manager') {
-                        document.getElementById('userManagementNav').classList.remove('hidden');
-                        loadUserManagement();
+                // Show login screen
+                document.getElementById('showLoginBtn').addEventListener('click', () => {
+                    document.getElementById('registerScreen').classList.add('hidden');
+                    document.getElementById('loginScreen').classList.remove('hidden');
+                });
+
+                // Sidebar navigation
+                document.querySelectorAll('[data-page]').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = e.currentTarget.dataset.page;
+                        showPage(page);
+                        updateActiveNavItem(e.currentTarget);
+                    });
+                });
+
+                // Sidebar toggle for mobile
+                document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+
+                // Logout
+                document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+                // Modal controls
+                document.getElementById('newExperimentBtn').addEventListener('click', () => {
+                    document.getElementById('experimentModal').classList.remove('hidden');
+                });
+
+                document.getElementById('closeExperimentModal').addEventListener('click', () => {
+                    document.getElementById('experimentModal').classList.add('hidden');
+                });
+
+                document.getElementById('cancelExperiment').addEventListener('click', () => {
+                    document.getElementById('experimentModal').classList.add('hidden');
+                });
+
+                // Close modal when clicking outside
+                document.getElementById('experimentModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'experimentModal') {
+                        document.getElementById('experimentModal').classList.add('hidden');
                     }
-                } else {
-                    showAlert(result.message || 'Invalid credentials. Please check your email, password, and user type.', 'error');
-                }
-            } catch (error) {
-                showAlert(error.message || 'Login failed. Please check your internet connection and try again.', 'error');
-            } finally {
-                // Reset button state
-                loginBtn.innerHTML = originalText;
-                loginBtn.disabled = false;
+                });
             }
-        }
 
-        // Load user management data
-        async function loadUserManagement() {
-            try {
-                const result = await getAllUsers();
-                if (result.success) {
-                    updateUserManagementTable(result.users);
-                }
-            } catch (error) {
-                console.error('Failed to load users:', error);
+            // Google Sheets API configuration (or any API endpoint)
+            const API_URL = 'https://script.google.com/macros/s/AKfycbzQ-pDGAwWAp5qHqjlH8KX9jbbOOKSJgooATVbeyOwGZH8E3MktCqft8w09f6Dhz8TFYA/exec';
+
+            // Utility functions for alerts
+            function showAlert(message, type = 'error') {
+                const alertDiv = document.getElementById('loginAlert');
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.textContent = message;
+                alertDiv.classList.remove('hidden');
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    alertDiv.classList.add('hidden');
+                }, 5000);
             }
-        }
 
-        // Update user management table
-        function updateUserManagementTable(users) {
-            const tbody = document.querySelector('#usersPage tbody');
-            if (!tbody) return;
-
-            tbody.innerHTML = users.map(user => `
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/977fd5f7-150e-4528-a610-49068bf9fa07.png" alt="Profile photo of ${user.name}" class="w-10 h-10 rounded-full">
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">${user.name}</p>
-                                <p class="text-sm text-gray-500">${user.email}</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${user.role}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${user.campus || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${formatLastActive(user.lastActive)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="status-badge ${getStatusClass(user.status)}">${user.status}</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                        <button class="text-blue-600 hover:text-blue-800" onclick="editUser('${user.id}')">Edit</button>
-                        <button class="text-red-600 hover:text-red-800" onclick="toggleUserStatus('${user.id}', '${user.status}')">
-                            ${user.status === 'active' ? 'Suspend' : 'Activate'}
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function formatLastActive(lastActive) {
-            if (!lastActive) return 'Never';
-            const date = new Date(lastActive);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-
-            if (diffHours < 1) return 'Just now';
-            if (diffHours < 24) return `${diffHours} hours ago`;
-            const diffDays = Math.floor(diffHours / 24);
-            return `${diffDays} days ago`;
-        }
-
-        function getStatusClass(status) {
-            switch(status) {
-                case 'active': return 'bg-green-100 text-green-800';
-                case 'suspended': return 'bg-red-100 text-red-800';
-                case 'pending': return 'bg-yellow-100 text-yellow-800';
-                default: return 'bg-gray-100 text-gray-800';
+            function hideAlert() {
+                document.getElementById('loginAlert').classList.add('hidden');
             }
-        }
 
-        async function editUser(userId) {
-            // Implementation for editing user
-            showAlert('User edit functionality will be implemented.', 'info');
-        }
-
-        async function toggleUserStatus(userId, currentStatus) {
-            try {
-                const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
-                const result = await updateUser(userId, { status: newStatus });
-
-                if (result.success) {
-                    showAlert(`User status updated successfully.`, 'success');
-                    await loadUserManagement(); // Reload the table
-                } else {
-                    showAlert(result.message || 'Failed to update user status.', 'error');
-                }
-            } catch (error) {
-                showAlert('Failed to update user status. Please try again.', 'error');
-            }
-        }
-
-        // Fallback user data for offline mode
-        function setUserData(userType) {
-            const userData = {
-                'lab_manager': {
-                    id: 'demo1',
-                    name: 'Dr. Sarah Johnson',
-                    role: 'Lab Manager',
-                    email: 'admin@lab.edu',
-                    type: userType,
-                    status: 'active'
-                },
-                'internal_student': {
-                    id: 'demo2',
-                    name: 'Maria Garcia',
-                    role: 'Internal Student',
-                    email: 'student@lab.edu',
-                    type: userType,
-                    status: 'active'
-                },
-                'external_student': {
-                    id: 'demo3',
-                    name: 'Alex Chen',
-                    role: 'External Student',
-                    email: 'external@student.edu',
-                    type: userType,
-                    status: 'active'
-                },
-                'internal_researcher': {
-                    id: 'demo4',
-                    name: 'Dr. Michael Smith',
-                    role: 'Internal Researcher',
-                    email: 'researcher@lab.edu',
-                    type: userType,
-                    status: 'active'
-                },
-                'external_researcher': {
-                    id: 'demo5',
-                    name: 'Dr. John Wilson',
-                    role: 'External Researcher',
-                    email: 'external@researcher.edu',
-                    type: userType,
-                    status: 'active'
-                }
-            };
-
-            currentUser = userData[userType] || {};
-
-            document.getElementById('userName').textContent = currentUser.name || 'Unknown User';
-            document.getElementById('userRole').textContent = currentUser.role || 'Unknown Role';
-        }
-
-        // Show specific page
-        function showPage(pageName) {
-            // Hide all pages
-            document.querySelectorAll('.page-content').forEach(page => {
-                page.classList.add('hidden');
-            });
-
-            // Show selected page
-            document.getElementById(pageName + 'Page').classList.remove('hidden');
-        }
-
-        // Update active navigation item
-        function updateActiveNavItem(activeItem) {
-            // Remove active class from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-
-            // Add active class to clicked item
-            activeItem.classList.add('active');
-        }
-
-        // Toggle sidebar for mobile
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('sidebar-hidden');
-        }
-
-        // Handle logout
-        function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                // Hide dashboard and show login screen
-                document.getElementById('dashboard').classList.add('hidden');
-                document.getElementById('loginScreen').classList.remove('hidden');
-
-                // Reset form
-                document.getElementById('loginForm').reset();
-
-                // Hide user management nav
-                document.getElementById('userManagementNav').classList.add('hidden');
-
-                // Reset to overview page
-                showPage('overview');
-                document.querySelector('[data-page="overview"]').classList.add('active');
-            }
-        }
-
-        // Initialize charts
-        function initializeCharts() {
-            // Activity Chart
-            const activityCtx = document.getElementById('activityChart');
-            if (activityCtx) {
-                new Chart(activityCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                        datasets: [{
-                            label: 'Experiments',
-                            data: [12, 19, 15, 25, 22, 30],
-                            borderColor: 'rgb(59, 130, 246)',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.4
-                        }, {
-                            label: 'Samples',
-                            data: [8, 15, 12, 18, 16, 22],
-                            borderColor: 'rgb(16, 185, 129)',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            }
+            // Google Sheets API functions
+            async function makeAPIRequest(data) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain',
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.text();
+                    return JSON.parse(result);
+                } catch (error) {
+                    console.error('API Error:', error);
+                    throw new Error('Network error occurred. Please try again.');
+                }
+            }
+
+            // Function to handle demo user login logic
+            async function authenticateUser(email, password, userType) {
+                try {
+                    // Try to make the API request
+                    const response = await makeAPIRequest({
+                        action: 'authenticate',
+                        email: email,
+                        password: password,
+                        userType: userType
+                    });
+
+                    // Check if the API response is valid
+                    if (response.success) {
+                        return response;
+                    } else {
+                        throw new Error(response.message || "Invalid credentials");
+                    }
+                } catch (error) {
+                    console.error('API Error:', error);
+
+                    // Check for demo credentials and handle accordingly
+                    const demoUsers = {
+                        'admin@lab.edu': { email: 'admin@lab.edu', password: 'admin123', type: 'lab_manager' },
+                        'student@lab.edu': { email: 'student@lab.edu', password: 'student123', type: 'internal_student' },
+                        'researcher@lab.edu': { email: 'researcher@lab.edu', password: 'researcher123', type: 'internal_researcher' }
+                    };
+
+                    // Simulate a successful login for demo users
+                    if (demoUsers[email] && demoUsers[email].password === password) {
+                        return {
+                            success: true,
+                            user: demoUsers[email]
+                        };
+                    } else {
+                        throw new Error("Network error occurred. Please try again.");
+                    }
+                }
+            }
+
+            // Handle login form submission with demo user fallback
+            async function handleLogin(e) {
+                e.preventDefault();
+                hideAlert();
+
+                const userType = document.getElementById('userType').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const loginBtn = document.querySelector('#loginBtn') || document.querySelector('button[type="submit"]');
+
+                if (!userType || !email || !password) {
+                    showAlert('Please fill in all fields', 'error');
+                    return;
+                }
+
+                // Show loading state
+                const originalText = loginBtn.innerHTML;
+                loginBtn.innerHTML = '<div class="loading-spinner"></div>Signing in...';
+                loginBtn.disabled = true;
+
+                try {
+                    // Authenticate with Google Sheets or simulate for demo
+                    const result = await authenticateUser(email, password, userType);
+
+                    if (result.success) {
+                        // Set current user data
+                        currentUser = result.user;
+
+                        // Update UI with user info
+                        document.getElementById('userName').textContent = currentUser.name;
+                        document.getElementById('userRole').textContent = currentUser.role;
+
+                        // Hide login screen and show dashboard
+                        document.getElementById('loginScreen').classList.add('hidden');
+                        document.getElementById('dashboard').classList.remove('hidden');
+
+                        // Show user management for lab managers only
+                        if (currentUser.type === 'lab_manager') {
+                            document.getElementById('userManagementNav').classList.remove('hidden');
+                            loadUserManagement();
+                        }
+                    } else {
+                        showAlert(result.message || 'Invalid credentials. Please check your email, password, and user type.', 'error');
+                    }
+                } catch (error) {
+                    showAlert(error.message || 'Login failed. Please check your internet connection and try again.', 'error');
+                } finally {
+                    // Reset button state
+                    loginBtn.innerHTML = originalText;
+                    loginBtn.disabled = false;
+                }
+            }
+
+            // Utility function to convert user type to role
+            function getRoleFromType(userType) {
+                const roleMap = {
+                    'lab_manager': 'Lab Manager',
+                    'internal_student': 'Internal Student',
+                    'external_student': 'External Student',
+                    'internal_researcher': 'Internal Researcher',
+                    'external_researcher': 'External Researcher'
+                };
+                return roleMap[userType] || 'Unknown Role';
+            }
+
+            // Handle registration form submission
+            async function handleRegister(e) {
+                e.preventDefault();
+                hideRegisterAlert();
+
+                const firstName = document.getElementById('regFirstName').value;
+                const lastName = document.getElementById('regLastName').value;
+                const email = document.getElementById('regEmail').value;
+                const userType = document.getElementById('regUserType').value;
+                const institution = document.getElementById('regInstitution').value;
+                const department = document.getElementById('regDepartment').value;
+                const password = document.getElementById('regPassword').value;
+                const confirmPassword = document.getElementById('regConfirmPassword').value;
+                const agreeTerms = document.getElementById('agreeTerms').checked;
+                const registerBtn = document.getElementById('registerBtn');
+
+                // Validation
+                if (!firstName || !lastName || !email || !userType || !institution || !password || !confirmPassword) {
+                    showRegisterAlert('Please fill in all required fields', 'error');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showRegisterAlert('Passwords do not match', 'error');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showRegisterAlert('Password must be at least 6 characters long', 'error');
+                    return;
+                }
+
+                if (!agreeTerms) {
+                    showRegisterAlert('Please agree to the terms and conditions', 'error');
+                    return;
+                }
+
+                // Show loading state
+                const originalText = registerBtn.innerHTML;
+                registerBtn.innerHTML = '<div class="loading-spinner"></div>Registering...';
+                registerBtn.disabled = true;
+
+                try {
+                    // Try to register with Google Sheets API
+                    const userData = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        name: `${firstName} ${lastName}`,
+                        email: email,
+                        password: password,
+                        type: userType,
+                        role: getRoleFromType(userType),
+                        institution: institution,
+                        department: department,
+                        campus: userType.includes('internal') ? 'Main Campus' : institution,
+                        status: 'pending', // Pending approval
+                        registeredAt: new Date().toISOString()
+                    };
+
+                    const result = await addUser(userData);
+
+                    if (result.success) {
+                        showRegisterAlert('Registration successful! Your account is pending approval by laboratory management. You will be notified via email once approved.', 'success');
+
+                        // Reset form after successful registration
+                        setTimeout(() => {
+                            document.getElementById('registerForm').reset();
+                            document.getElementById('registerScreen').classList.add('hidden');
+                            document.getElementById('loginScreen').classList.remove('hidden');
+                            showAlert('Registration submitted successfully. Please wait for approval.', 'info');
+                        }, 3000);
+
+                    } else {
+                        showRegisterAlert(result.message || 'Registration failed. Please try again.', 'error');
+                    }
+                } catch (error) {
+                    // Demo mode fallback
+                    console.log('API unavailable, simulating registration');
+
+                    // Check if email already exists in demo credentials
+                    const demoEmails = ['admin@lab.edu', 'student@lab.edu', 'researcher@lab.edu'];
+
+                    if (demoEmails.includes(email)) {
+                        showRegisterAlert('Email already exists. Please use a different email address.', 'error');
+                    } else {
+                        showRegisterAlert('Registration successful! In demo mode, you can now use these credentials to login after approval.', 'success');
+
+                        // Reset form after successful registration
+                        setTimeout(() => {
+                            document.getElementById('registerForm').reset();
+                            document.getElementById('registerScreen').classList.add('hidden');
+                            document.getElementById('loginScreen').classList.remove('hidden');
+                            showAlert('Demo registration completed. Please contact admin for login credentials.', 'info');
+                        }, 3000);
+                    }
+                } finally {
+                    // Reset button state
+                    registerBtn.innerHTML = originalText;
+                    registerBtn.disabled = false;
+                }
+            }
+
+            // Utility functions for register alerts
+            function showRegisterAlert(message, type = 'error') {
+                const alertDiv = document.getElementById('registerAlert');
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.textContent = message;
+                alertDiv.classList.remove('hidden');
+
+                // Auto-hide after 8 seconds for success messages
+                const timeout = type === 'success' ? 8000 : 5000;
+                setTimeout(() => {
+                    alertDiv.classList.add('hidden');
+                }, timeout);
+            }
+
+            function hideRegisterAlert() {
+                document.getElementById('registerAlert').classList.add('hidden');
+            }
+
+            // Utility functions for showing pages
+            function showPage(pageName) {
+                // Hide all pages
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.classList.add('hidden');
+                });
+
+                // Show selected page
+                document.getElementById(pageName + 'Page').classList.remove('hidden');
+            }
+
+            // Update active navigation item
+            function updateActiveNavItem(activeItem) {
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Add active class to clicked item
+                activeItem.classList.add('active');
+            }
+
+            // Toggle sidebar for mobile
+            function toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('sidebar-hidden');
+            }
+
+            // Handle logout
+            function handleLogout() {
+                if (confirm('Are you sure you want to logout?')) {
+                    // Hide dashboard and show login screen
+                    document.getElementById('dashboard').classList.add('hidden');
+                    document.getElementById('loginScreen').classList.remove('hidden');
+
+                    // Reset form
+                    document.getElementById('loginForm').reset();
+
+                    // Hide user management nav
+                    document.getElementById('userManagementNav').classList.add('hidden');
+
+                    // Reset to overview page
+                    showPage('overview');
+                    document.querySelector('[data-page="overview"]').classList.add('active');
+                }
+            }
+
+            // Initialize charts
+            function initializeCharts() {
+                // Activity Chart
+                const activityCtx = document.getElementById('activityChart');
+                if (activityCtx) {
+                    new Chart(activityCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            datasets: [{
+                                label: 'Experiments',
+                                data: [12, 19, 15, 25, 22, 30],
+                                borderColor: 'rgb(59, 130, 246)',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                tension: 0.4
+                            }, {
+                                label: 'Samples',
+                                data: [8, 15, 12, 18, 16, 22],
+                                borderColor: 'rgb(16, 185, 129)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
                             }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            // Equipment Chart
-            const equipmentCtx = document.getElementById('equipmentChart');
-            if (equipmentCtx) {
-                new Chart(equipmentCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Microscopes', 'Centrifuges', 'PCR Machines', 'Spectrophotometers', 'Other'],
-                        datasets: [{
-                            data: [30, 25, 20, 15, 10],
-                            backgroundColor: [
-                                'rgb(59, 130, 246)',
-                                'rgb(16, 185, 129)',
-                                'rgb(245, 158, 11)',
-                                'rgb(139, 92, 246)',
-                                'rgb(107, 114, 128)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
+                // Equipment Chart
+                const equipmentCtx = document.getElementById('equipmentChart');
+                if (equipmentCtx) {
+                    new Chart(equipmentCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Microscopes', 'Centrifuges', 'PCR Machines', 'Spectrophotometers', 'Other'],
+                            datasets: [{
+                                data: [30, 25, 20, 15, 10],
+                                backgroundColor: [
+                                    'rgb(59, 130, 246)',
+                                    'rgb(16, 185, 129)',
+                                    'rgb(245, 158, 11)',
+                                    'rgb(139, 92, 246)',
+                                    'rgb(107, 114, 128)'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
-        }
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
-
-            if (window.innerWidth < 768 &&
-                !sidebar.contains(e.target) &&
-                !sidebarToggle.contains(e.target) &&
-                !sidebar.classList.contains('sidebar-hidden')) {
-                sidebar.classList.add('sidebar-hidden');
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            const sidebar = document.getElementById('sidebar');
-            if (window.innerWidth >= 768) {
-                sidebar.classList.remove('sidebar-hidden');
-            }
-        });
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+    </html>
