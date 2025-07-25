@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Reticulocyte Counting Simulator - Miller Disc Method</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        #microscope-view {
+            border: 3px solid #333;
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            position: relative;
+            margin: 0 auto;
+            cursor: crosshair;
+        }
+        
+        .miller-disc {
+            position: absolute;
+            border: 2px solid #000;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .large-square {
+            width: 300px;
+            height: 300px;
+            top: 50px;
+            left: 50px;
+        }
+        
+        .small-square {
+            width: 100px;
+            height: 100px;
+            top: 150px;
+            left: 150px;
+            border: 2px solid #ff0000;
+            background: rgba(255, 0, 0, 0.05);
+        }
+        
+        .cell {
+            position: absolute;
+            border-radius: 50%;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .rbc {
+            background: #ffcccb;
+            border: 1px solid #ff6b6b;
+            width: 12px;
+            height: 12px;
+        }
+        
+        .reticulocyte {
+            background: #add8e6;
+            border: 2px solid #4169e1;
+            width: 14px;
+            height: 14px;
+        }
+        
+        .reticulocyte::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #000080;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+        }
+        
+        .reticulocyte::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #000080;
+            border-radius: 50%;
+            top: 6px;
+            left: 7px;
+        }
+        
+        /* Learning Mode Styles */
+        .cell.highlighted {
+            box-shadow: 0 0 15px #ffeb3b;
+            animation: pulse-highlight 2s infinite;
+        }
+        
+        .cell.correctly-identified {
+            box-shadow: 0 0 10px #4caf50;
+            transform: scale(1.1);
+        }
+        
+        .cell.incorrectly-identified {
+            box-shadow: 0 0 10px #f44336;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes pulse-highlight {
+            0%, 100% { box-shadow: 0 0 15px #ffeb3b; }
+            50% { box-shadow: 0 0 25px #ff9800; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            #microscope-view {
+                width: 100%;
+                max-width: 350px;
+                height: 350px;
+            }
+            
+            .large-square {
+                width: 250px;
+                height: 250px;
+                top: 50px;
+                left: 50px;
+            }
+            
+            .small-square {
+                width: 83px;
+                height: 83px;
+                top: 133px;
+                left: 133px;
+            }
+            
+            .cell {
+                width: 14px !important;
+                height: 14px !important;
+            }
+            
+            .btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn-group .btn {
+                margin-bottom: 0.25rem;
+            }
+        }
+        
+        /* Tutorial Overlay */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .tutorial-content {
+            position: absolute;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .tutorial-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+        }
+        
+        /* Edge Rule Lines */
+        .edge-rule-line {
+            position: absolute;
+            background: rgba(255, 0, 0, 0.5);
+            pointer-events: none;
+        }
+        
+        .edge-rule-line.bottom {
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+        
+        .edge-rule-line.right {
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 3px;
+        }
+        
+        /* Hint System */
+        .hint-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #fff;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 1rem;
+            max-width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 100;
+        }
+        
+        .progress-tracker {
+            background: #e9ecef;
+            border-radius: 25px;
+            height: 20px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar-custom {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Touch-friendly buttons */
+        .touch-btn {
+            min-height: 48px;
+            min-width: 48px;
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+    <!-- Tutorial Overlay -->
+    <div class="tutorial-overlay" id="tutorial-overlay">
+        <div class="tutorial-content" id="tutorial-content">
+            <h5 id="tutorial-title">Welcome to the Tutorial!</h5>
+            <p id="tutorial-text">This interactive tutorial will guide you through reticulocyte counting using the Miller disc method.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-secondary" id="tutorial-prev">Previous</button>
+                <button class="btn btn-primary" id="tutorial-next">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mb-4">
+                    <i class="fas fa-microscope"></i>
+                    Enhanced Reticulocyte Counting Simulator
+                </h1>
+                <p class="text-center lead">Miller Disc Method with Progressive Learning</p>
+                
+                <!-- Learning Mode Selector -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0">Learning Mode Selection</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="btn-group w-100" role="group">
+                                    <button class="btn btn-success touch-btn" onclick="setLearningMode('tutorial')">
+                                        <i class="fas fa-play-circle"></i> Tutorial
+                                    </button>
+                                    <button class="btn btn-primary touch-btn active" onclick="setLearningMode('beginner')">
+                                        <i class="fas fa-graduation-cap"></i> Beginner
+                                    </button>
+                                    <button class="btn btn-warning touch-btn" onclick="setLearningMode('intermediate')">
+                                        <i class="fas fa-user"></i> Intermediate
+                                    </button>
+                                    <button class="btn btn-danger touch-btn" onclick="setLearningMode('expert')">
+                                        <i class="fas fa-user-md"></i> Expert
+                                    </button>
+                                </div>
+                                
+                                <!-- Progress Tracker -->
+                                <div class="progress-tracker mt-3" id="progress-container" style="display: none;">
+                                    <div class="progress-bar-custom" id="progress-bar" style="width: 0%"></div>
+                                </div>
+                                <div class="text-center mt-2" id="progress-text" style="display: none;">
+                                    <small class="text-muted">Progress: <span id="progress-count">0/0</span></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Microscope View - Oil Immersion (1000x)</h5>
+                        <span id="scenario-badge" class="badge bg-secondary">Normal Range</span>
+                    </div>
+                    <div class="card-body text-center position-relative">
+                        <canvas id="microscope-view" width="400" height="400"></canvas>
+                        <div class="mt-3">
+                            <div class="btn-group me-3 mb-2" role="group">
+                                <button class="btn btn-success touch-btn" onclick="generateScenario('normal')">
+                                    <i class="fas fa-check-circle"></i> Normal
+                                </button>
+                                <button class="btn btn-warning touch-btn" onclick="generateScenario('low')">
+                                    <i class="fas fa-arrow-down"></i> Low
+                                </button>
+                                <button class="btn btn-danger touch-btn" onclick="generateScenario('high')">
+                                    <i class="fas fa-arrow-up"></i> High
+                                </button>
+                            </div>
+                            <button class="btn btn-info me-2 mb-2 touch-btn" onclick="toggleHint()">
+                                <i class="fas fa-question-circle"></i> <span id="hint-button-text">Get Hint</span>
+                            </button>
+                            <button class="btn btn-warning me-2 mb-2 touch-btn" onclick="toggleEdgeRule()">
+                                <i class="fas fa-ruler"></i> <span id="edge-rule-text">Show Edge Rule</span>
+                            </button>
+                            <button class="btn btn-secondary mb-2 touch-btn" onclick="resetSimulation()">
+                                <i class="fas fa-refresh"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Learning Mode Instructions -->
+                <div class="card shadow mt-3" id="instructions-card">
+                    <div class="card-header" id="instructions-header">
+                        <h6 class="mb-0" id="instructions-title">Instructions</h6>
+                    </div>
+                    <div class="card-body" id="instructions-body">
+                        <div id="instructions-content">
+                            <!-- Dynamic content based on learning mode -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Counting Interface -->
+                <div class="card shadow">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0 text-center">Interactive Counting</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="counting-display">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="text-center p-3 border rounded">
+                                        <h6>Reticulocytes</h6>
+                                        <h3 class="text-primary" id="retic-counter">0</h3>
+                                        <small>Large Square</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center p-3 border rounded">
+                                        <h6>RBCs</h6>
+                                        <h3 class="text-danger" id="rbc-counter">0</h3>
+                                        <small>Small Square</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3" id="manual-inputs" style="display: none;">
+                            <div class="mb-3">
+                                <label class="form-label">Reticulocytes (Large Square):</label>
+                                <input type="number" class="form-control" id="user-retic-count" 
+                                       placeholder="Count blue cells" min="0">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">RBCs (Small Square):</label>
+                                <input type="number" class="form-control" id="user-rbc-count" 
+                                       placeholder="Count all cells" min="0">
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 touch-btn" onclick="calculateResults()">
+                            <i class="fas fa-calculator"></i> Calculate Percentage
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="card shadow mt-3" id="results-card">
+                    <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <h5 class="mb-0 text-center">Results & Calculation</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="calculation-display" class="text-center">
+                            <div class="bg-dark rounded p-3 mb-3">
+                                <code class="text-light">
+                                    Retics (%) = <span id="calc-retic">-</span> × 100<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span id="calc-rbc">-</span> × 9)<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span id="calc-result">-.--</span>%
+                                </code>
+                            </div>
+                            
+                            <div id="interpretation" class="alert alert-secondary">
+                                <strong>Click Calculate to see results</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reference Values -->
+                <div class="card shadow mt-3">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">Reference Values (NCCLS H44-A2)</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li><strong>Normal:</strong> 20-110 × 10⁹/L (0.5-2.5%)</li>
+                            <li><strong>Low:</strong> &lt;20 × 10⁹/L (&lt;0.5%)</li>
+                            <li><strong>High:</strong> &gt;110 × 10⁹/L (&gt;3.0%)</li>
+                            <li><strong>Critical High:</strong> &gt;200 × 10⁹/L (&gt;5.0%)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <script>
+        // Enhanced Reticulocyte Simulator with Progressive Learning
+        let canvas, ctx;
+        let cells = [];
+        let currentScenario = 'normal';
+        let learningMode = 'beginner';
+        let actualReticCount = 0;
+        let actualRbcCount = 0;
+        let actualPercentage = 0;
+        let userReticCount = 0;
+        let userRbcCount = 0;
+        let highlightedCells = [];
+        let currentStep = 0;
+        let tutorialStep = 0;
+        let showingEdgeRule = false;
+        
+        // Miller disc dimensions
+        const LARGE_SQUARE = { x: 50, y: 50, width: 300, height: 300 };
+        const SMALL_SQUARE = { x: 150, y: 150, width: 100, height: 100 };
+        
+        // Scenario configurations
+        const scenarios = {
+            normal: {
+                name: 'Normal Range',
+                badge: 'bg-success',
+                percentage: { min: 0.5, max: 2.5 },
+                description: 'Healthy individual with normal bone marrow function'
+            },
+            low: {
+                name: 'Low Reticulocytes',
+                badge: 'bg-warning text-dark',
+                percentage: { min: 0.1, max: 0.4 },
+                description: 'Aplastic anemia, bone marrow suppression'
+            },
+            high: {
+                name: 'High Reticulocytes',
+                badge: 'bg-danger',
+                percentage: { min: 3.0, max: 8.0 },
+                description: 'Hemolytic anemia, acute bleeding'
+            }
+        };
+        
+        // Tutorial steps
+        const tutorialSteps = [
+            {
+                title: "Welcome to Reticulocyte Counting!",
+                text: "This simulator teaches you to count reticulocytes using the Miller disc method, following NCCLS H44-A2 guidelines.",
+                highlight: null
+            },
+            {
+                title: "The Miller Disc",
+                text: "The Miller disc has a large square and a small square (1/9 the area). Count reticulocytes in the large square and all RBCs in the small square.",
+                highlight: "miller-disc"
+            },
+            {
+                title: "Identifying Reticulocytes",
+                text: "Reticulocytes appear blue with dark granules (RNA content). Mature RBCs are pink/red without granules.",
+                highlight: "cells"
+            },
+            {
+                title: "Edge Rule",
+                text: "Don't count cells touching the bottom or right edges of the small square to avoid bias.",
+                highlight: "edge-rule"
+            },
+            {
+                title: "Ready to Practice!",
+                text: "Start with Beginner mode for guided practice, then progress to Expert mode for real-time conditions.",
+                highlight: null
+            }
+        ];
+        
+        // Learning mode configurations
+        const learningModes = {
+            tutorial: {
+                name: 'Tutorial Mode',
+                color: 'success',
+                description: 'Step-by-step guided introduction',
+                features: ['Guided tour', 'Detailed explanations', 'No time pressure']
+            },
+            beginner: {
+                name: 'Beginner Mode',
+                color: 'primary',
+                description: 'Highlighted cells with feedback',
+                features: ['Cell highlighting', 'Instant feedback', 'Progress tracking', 'Hints available']
+            },
+            intermediate: {
+                name: 'Intermediate Mode',
+                color: 'warning',
+                description: 'Limited guidance with hints',
+                features: ['Hints on demand', 'Some feedback', 'More realistic']
+            },
+            expert: {
+                name: 'Expert Mode',
+                color: 'danger',
+                description: 'Real laboratory conditions',
+                features: ['No assistance', 'Manual counting only', 'Professional level']
+            }
+        };
+        
+        window.onload = function() {
+            canvas = document.getElementById('microscope-view');
+            ctx = canvas.getContext('2d');
+            
+            // Make responsive for mobile
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Add touch event listeners for mobile
+            canvas.addEventListener('click', handleCellClick);
+            canvas.addEventListener('touchstart', handleTouch);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboard);
+            
+            generateScenario('normal');
+            setLearningMode('beginner');
+        };
+        
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const maxWidth = Math.min(container.clientWidth - 40, 400);
+            const maxHeight = maxWidth; // Keep square aspect ratio
+            
+            canvas.style.width = maxWidth + 'px';
+            canvas.style.height = maxHeight + 'px';
+            
+            // Adjust Miller disc dimensions for mobile
+            if (window.innerWidth <= 768) {
+                LARGE_SQUARE.width = 250;
+                LARGE_SQUARE.height = 250;
+                SMALL_SQUARE.width = 83;
+                SMALL_SQUARE.height = 83;
+                SMALL_SQUARE.x = 133;
+                SMALL_SQUARE.y = 133;
+            }
+        }
+        
+        function handleKeyboard(event) {
+            switch(event.key) {
+                case 'h':
+                case 'H':
+                    toggleHint();
+                    break;
+                case 'r':
+                case 'R':
+                    resetSimulation();
+                    break;
+                case 'e':
+                case 'E':
+                    toggleEdgeRule();
+                    break;
+                case '1':
+                    generateScenario('normal');
+                    break;
+                case '2':
+                    generateScenario('low');
+                    break;
+                case '3':
+                    generateScenario('high');
+                    break;
+            }
+        }
+        
+        function setLearningMode(mode) {
+            learningMode = mode;
+            const config = learningModes[mode];
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('[onclick*="setLearningMode"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to current button
+            document.querySelector(`[onclick="setLearningMode('${mode}')"]`).classList.add('active');
+            
+            // Update instructions
+            updateInstructions();
+            
+            // Show/hide features based on mode
+            updateUIForMode();
+            
+            // Start tutorial if selected
+            if (mode === 'tutorial') {
+                startTutorial();
+            } else {
+                hideTutorial();
+            }
+            
+            // Reset simulation
+            resetSimulation();
+        }
+        
+        function updateInstructions() {
+            const config = learningModes[learningMode];
+            const header = document.getElementById('instructions-header');
+            const title = document.getElementById('instructions-title');
+            const content = document.getElementById('instructions-content');
+            
+            header.className = `card-header bg-${config.color} text-white`;
+            title.textContent = `${config.name} Instructions`;
+            
+            let instructionsHTML = `<p><strong>${config.description}</strong></p>`;
+            
+            if (learningMode === 'beginner') {
+                instructionsHTML += `
+                    <p>In this mode, you'll receive visual guidance to help identify reticulocytes. The first few reticulocytes will be highlighted with a yellow glow to help you recognize them. Click on cells to count them - reticulocytes in the large square and all cells in the small square (excluding edge cells). Your progress will be tracked automatically.</p>
+                    <p><strong>How to count:</strong> Click on reticulocytes (blue cells with dark granules) in the large square. Then click on all RBCs in the small square, remembering to exclude cells touching the bottom or right edges. The counters will update automatically as you click. When ready, calculate the percentage.</p>
+                    <p><strong>Keyboard shortcuts:</strong> Press H for hints, E for edge rule, R to reset, or 1/2/3 to switch scenarios.</p>
+                `;
+            } else if (learningMode === 'intermediate') {
+                instructionsHTML += `
+                    <p>This mode provides limited guidance to help transition to professional counting. Hints are available on demand, and you'll receive feedback after calculations. Practice applying the edge rule and identifying reticulocytes without visual highlighting.</p>
+                `;
+            } else if (learningMode === 'expert') {
+                instructionsHTML += `
+                    <p><strong>Professional Mode:</strong> This simulates real laboratory conditions with no assistance. Count cells manually and enter your results in the input fields. This mode helps prepare for actual microscopy work where you must rely entirely on your skills and knowledge.</p>
+                `;
+            } else if (learningMode === 'tutorial') {
+                instructionsHTML += `
+                    <p>The tutorial provides a comprehensive introduction to reticulocyte counting using the Miller disc method. You'll learn about cell identification, the edge rule, and proper calculation techniques through guided steps.</p>
+                `;
+            }
+            
+            content.innerHTML = instructionsHTML;
+        }
+        
+        function updateUIForMode() {
+            const countingDisplay = document.getElementById('counting-display');
+            const manualInputs = document.getElementById('manual-inputs');
+            const progressContainer = document.getElementById('progress-container');
+            const progressText = document.getElementById('progress-text');
+            
+            if (learningMode === 'expert') {
+                countingDisplay.style.display = 'none';
+                manualInputs.style.display = 'block';
+                progressContainer.style.display = 'none';
+                progressText.style.display = 'none';
+            } else {
+                countingDisplay.style.display = 'block';
+                manualInputs.style.display = 'none';
+                
+                if (learningMode === 'beginner') {
+                    progressContainer.style.display = 'block';
+                    progressText.style.display = 'block';
+                    updateProgress();
+                } else {
+                    progressContainer.style.display = 'none';
+                    progressText.style.display = 'none';
+                }
+            }
+        }
+        
+        function startTutorial() {
+            tutorialStep = 0;
+            showTutorialStep();
+            document.getElementById('tutorial-overlay').style.display = 'block';
+        }
+        
+        function showTutorialStep() {
+            const step = tutorialSteps[tutorialStep];
+            document.getElementById('tutorial-title').textContent = step.title;
+            document.getElementById('tutorial-text').textContent = step.text;
+            
+            // Update navigation buttons
+            document.getElementById('tutorial-prev').style.display = 
+                tutorialStep === 0 ? 'none' : 'inline-block';
+            document.getElementById('tutorial-next').textContent = 
+                tutorialStep === tutorialSteps.length - 1 ? 'Finish' : 'Next';
+        }
+        
+        function hideTutorial() {
+            document.getElementById('tutorial-overlay').style.display = 'none';
+        }
+        
+        function generateScenario(scenarioType) {
+            currentScenario = scenarioType;
+            const scenario = scenarios[scenarioType];
+            
+            // Update badge
+            const badge = document.getElementById('scenario-badge');
+            badge.className = `badge ${scenario.badge}`;
+            badge.textContent = scenario.name;
+            
+            cells = [];
+            resetCounts();
+            
+            // Generate cells based on scenario
+            const targetPercentage = scenario.percentage.min + 
+                Math.random() * (scenario.percentage.max - scenario.percentage.min);
+            
+            const totalCellsInView = 60 + Math.floor(Math.random() * 40);
+            const expectedRetics = Math.round(totalCellsInView * targetPercentage / 100);
+            
+            // Generate reticulocytes first
+            for (let i = 0; i < expectedRetics; i++) {
+                const cell = createRandomCell('reticulocyte');
+                cells.push(cell);
+            }
+            
+            // Generate remaining RBCs
+            const remainingCells = totalCellsInView - expectedRetics;
+            for (let i = 0; i < remainingCells; i++) {
+                const cell = createRandomCell('rbc');
+                cells.push(cell);
+            }
+            
+            shuffleArray(cells);
+            calculateActualCounts();
+            drawMicroscopeView();
+            
+            // Beginner mode: highlight first few reticulocytes
+            if (learningMode === 'beginner') {
+                highlightReticulocytes();
+            }
+        }
+        
+        function createRandomCell(type) {
+            const cell = {
+                x: 25 + Math.random() * 350,
+                y: 25 + Math.random() * 350,
+                type: type,
+                radius: type === 'reticulocyte' ? 7 : 6,
+                clicked: false,
+                id: Date.now() + Math.random()
+            };
+            
+            // Ensure good distribution and avoid overlaps
+            let attempts = 0;
+            while (attempts < 50 && hasOverlap(cell)) {
+                cell.x = 25 + Math.random() * 350;
+                cell.y = 25 + Math.random() * 350;
+                attempts++;
+            }
+            
+            return cell;
+        }
+        
+        function hasOverlap(newCell) {
+            for (let existingCell of cells) {
+                const dx = newCell.x - existingCell.x;
+                const dy = newCell.y - existingCell.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const minDistance = newCell.radius + existingCell.radius + 3;
+                
+                if (distance < minDistance) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        
+        function calculateActualCounts() {
+            actualReticCount = 0;
+            actualRbcCount = 0;
+            
+            cells.forEach(cell => {
+                if (cell.type === 'reticulocyte' && isInSquare(cell, LARGE_SQUARE)) {
+                    actualReticCount++;
+                }
+                
+                if (isInSquare(cell, SMALL_SQUARE) && !isOnEdge(cell, SMALL_SQUARE)) {
+                    actualRbcCount++;
+                }
+            });
+            
+            actualPercentage = actualRbcCount > 0 ? (actualReticCount * 100) / (actualRbcCount * 9) : 0;
+        }
+        
+        function isInSquare(cell, square) {
+            return cell.x >= square.x && 
+                   cell.x <= square.x + square.width &&
+                   cell.y >= square.y && 
+                   cell.y <= square.y + square.height;
+        }
+        
+        function isOnEdge(cell, square) {
+            const tolerance = 3;
+            const rightEdge = cell.x >= square.x + square.width - tolerance;
+            const bottomEdge = cell.y >= square.y + square.height - tolerance;
+            return rightEdge || bottomEdge;
+        }
+        
+        function highlightReticulocytes() {
+            if (learningMode !== 'beginner') return;
+            
+            const reticsInLargeSquare = cells.filter(cell => 
+                cell.type === 'reticulocyte' && isInSquare(cell, LARGE_SQUARE)
+            );
+            
+            // Highlight first 3 reticulocytes
+            highlightedCells = reticsInLargeSquare.slice(0, 3);
+            drawMicroscopeView();
+        }
+        
+        function drawMicroscopeView() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw Miller disc
+            drawMillerDisc();
+            
+            // Draw cells
+            cells.forEach(cell => drawCell(cell));
+        }
+        
+        function drawMillerDisc() {
+            // Large square - blue color
+            ctx.strokeStyle = '#0066cc';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(LARGE_SQUARE.x, LARGE_SQUARE.y, LARGE_SQUARE.width, LARGE_SQUARE.height);
+            
+            // Small square - red color
+            ctx.strokeStyle = '#cc0000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(SMALL_SQUARE.x, SMALL_SQUARE.y, SMALL_SQUARE.width, SMALL_SQUARE.height);
+            
+            // Labels
+            ctx.fillStyle = '#0066cc';
+            ctx.font = '12px Arial';
+            ctx.fillText('Large Square', LARGE_SQUARE.x, LARGE_SQUARE.y - 5);
+            ctx.fillStyle = '#cc0000';
+            ctx.fillText('Small Square (1/9 area)', SMALL_SQUARE.x, SMALL_SQUARE.y - 5);
+            
+            // Draw edge rule lines if enabled
+            if (showingEdgeRule) {
+                ctx.save();
+                ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+                ctx.lineWidth = 3;
+                
+                // Bottom edge line
+                ctx.beginPath();
+                ctx.moveTo(SMALL_SQUARE.x, SMALL_SQUARE.y + SMALL_SQUARE.height);
+                ctx.lineTo(SMALL_SQUARE.x + SMALL_SQUARE.width, SMALL_SQUARE.y + SMALL_SQUARE.height);
+                ctx.stroke();
+                
+                // Right edge line
+                ctx.beginPath();
+                ctx.moveTo(SMALL_SQUARE.x + SMALL_SQUARE.width, SMALL_SQUARE.y);
+                ctx.lineTo(SMALL_SQUARE.x + SMALL_SQUARE.width, SMALL_SQUARE.y + SMALL_SQUARE.height);
+                ctx.stroke();
+                
+                // Add "DO NOT COUNT" text
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+                ctx.font = 'bold 10px Arial';
+                ctx.fillText('DO NOT COUNT', SMALL_SQUARE.x + SMALL_SQUARE.width + 5, SMALL_SQUARE.y + SMALL_SQUARE.height/2);
+                ctx.restore();
+            }
+        }
+        
+        function drawCell(cell) {
+            ctx.save();
+            
+            // Determine if cell should be highlighted
+            const isHighlighted = learningMode === 'beginner' && 
+                                highlightedCells.some(h => h.id === cell.id);
+            
+            // Cell body
+            if (cell.type === 'reticulocyte') {
+                ctx.fillStyle = '#add8e6';
+                ctx.strokeStyle = '#4169e1';
+            } else {
+                ctx.fillStyle = '#ffcccb';
+                ctx.strokeStyle = '#ff6b6b';
+            }
+            
+            // Highlight effect
+            if (isHighlighted) {
+                ctx.shadowColor = '#ffeb3b';
+                ctx.shadowBlur = 15;
+            }
+            
+            // Visual feedback for clicked cells
+            if (cell.clicked) {
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+            } else {
+                ctx.lineWidth = 1;
+            }
+            
+            ctx.beginPath();
+            ctx.arc(cell.x, cell.y, cell.radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Draw reticulocyte granules
+            if (cell.type === 'reticulocyte') {
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#000080';
+                
+                // Granule 1
+                ctx.beginPath();
+                ctx.arc(cell.x - 2, cell.y - 1, 1.5, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Granule 2
+                ctx.beginPath();
+                ctx.arc(cell.x + 1, cell.y + 2, 1, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            
+            ctx.restore();
+        }
+        
+        function handleCellClick(event) {
+            if (learningMode === 'expert') return; // No clicking in expert mode
+            
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const x = (event.clientX - rect.left) * scaleX;
+            const y = (event.clientY - rect.top) * scaleY;
+            
+            // Find clicked cell
+            const clickedCell = cells.find(cell => {
+                const dx = x - cell.x;
+                const dy = y - cell.y;
+                return Math.sqrt(dx * dx + dy * dy) <= cell.radius;
+            });
+            
+            if (clickedCell && !clickedCell.clicked) {
+                clickedCell.clicked = true;
+                
+                // Update counters based on cell type and location
+                if (clickedCell.type === 'reticulocyte' && isInSquare(clickedCell, LARGE_SQUARE)) {
+                    userReticCount++;
+                    document.getElementById('retic-counter').textContent = userReticCount;
+                    
+                    // Remove from highlighted cells if it was highlighted
+                    highlightedCells = highlightedCells.filter(h => h.id !== clickedCell.id);
+                }
+                
+                if (isInSquare(clickedCell, SMALL_SQUARE) && !isOnEdge(clickedCell, SMALL_SQUARE)) {
+                    userRbcCount++;
+                    document.getElementById('rbc-counter').textContent = userRbcCount;
+                }
+                
+                // Provide feedback
+                provideFeedback(clickedCell);
+                
+                // Update progress
+                updateProgress();
+                
+                drawMicroscopeView();
+            }
+        }
+        
+        function handleTouch(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const mouseEvent = new MouseEvent('click', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            handleCellClick(mouseEvent);
+        }
+        
+        function provideFeedback(cell) {
+            if (learningMode === 'beginner') {
+                const isCorrect = 
+                    (cell.type === 'reticulocyte' && isInSquare(cell, LARGE_SQUARE)) ||
+                    (isInSquare(cell, SMALL_SQUARE) && !isOnEdge(cell, SMALL_SQUARE));
+                
+                // Visual feedback would be added here
+                // Could show temporary messages or animations
+            }
+        }
+        
+        function updateProgress() {
+            if (learningMode !== 'beginner') return;
+            
+            const totalExpected = actualReticCount + actualRbcCount;
+            const userTotal = userReticCount + userRbcCount;
+            const progress = totalExpected > 0 ? (userTotal / totalExpected) * 100 : 0;
+            
+            document.getElementById('progress-bar').style.width = Math.min(progress, 100) + '%';
+            document.getElementById('progress-count').textContent = `${userTotal}/${totalExpected}`;
+        }
+        
+        function resetCounts() {
+            userReticCount = 0;
+            userRbcCount = 0;
+            document.getElementById('retic-counter').textContent = '0';
+            document.getElementById('rbc-counter').textContent = '0';
+            updateProgress();
+        }
+        
+        function toggleEdgeRule() {
+            showingEdgeRule = !showingEdgeRule;
+            drawMicroscopeView();
+            
+            const buttonText = document.getElementById('edge-rule-text');
+            buttonText.textContent = showingEdgeRule ? 'Hide Edge Rule' : 'Show Edge Rule';
+        }
+        
+        function resetSimulation() {
+            cells.forEach(cell => cell.clicked = false);
+            highlightedCells = [];
+            resetCounts();
+            hideHint();
+            
+            // Clear calculation display
+            document.getElementById('calc-retic').textContent = '-';
+            document.getElementById('calc-rbc').textContent = '-';
+            document.getElementById('calc-result').textContent = '-.--';
+            document.getElementById('interpretation').innerHTML = '<strong>Click Calculate to see results</strong>';
+            document.getElementById('interpretation').className = 'alert alert-secondary';
+            
+            // Clear manual inputs
+            document.getElementById('user-retic-count').value = '';
+            document.getElementById('user-rbc-count').value = '';
+            
+            generateScenario(currentScenario);
+        }
+        
+        function calculateResults() {
+            let reticCount, rbcCount;
+            
+            if (learningMode === 'expert') {
+                reticCount = parseInt(document.getElementById('user-retic-count').value) || 0;
+                rbcCount = parseInt(document.getElementById('user-rbc-count').value) || 0;
+            } else {
+                reticCount = userReticCount;
+                rbcCount = userRbcCount;
+            }
+            
+            if (reticCount === 0 && rbcCount === 0) {
+                alert('Please count some cells first!');
+                return;
+            }
+            
+            const percentage = rbcCount > 0 ? (reticCount * 100) / (rbcCount * 9) : 0;
+            
+            // Update calculation display
+            document.getElementById('calc-retic').textContent = reticCount;
+            document.getElementById('calc-rbc').textContent = rbcCount;
+            document.getElementById('calc-result').textContent = percentage.toFixed(2);
+            
+            // Interpret results
+            interpretResults(percentage);
+            
+            // Show feedback for learning modes
+            if (learningMode !== 'expert') {
+                showComparisonFeedback(reticCount, rbcCount, percentage);
+            }
+        }
+        
+        function interpretResults(percentage) {
+            const interpretation = document.getElementById('interpretation');
+            let alertClass = 'alert-secondary';
+            let message = '';
+            
+            if (percentage < 0.5) {
+                alertClass = 'alert-warning';
+                message = `<strong>Low Reticulocytes (${percentage.toFixed(2)}%)</strong><br>
+                          Reference: &lt;20 × 10⁹/L. Possible causes: Aplastic anemia, bone marrow suppression`;
+            } else if (percentage <= 2.5) {
+                alertClass = 'alert-success';
+                message = `<strong>Normal Reticulocytes (${percentage.toFixed(2)}%)</strong><br>
+                          Reference: 20-110 × 10⁹/L. Within normal range - healthy bone marrow function`;
+            } else if (percentage <= 5.0) {
+                alertClass = 'alert-warning';
+                message = `<strong>Elevated Reticulocytes (${percentage.toFixed(2)}%)</strong><br>
+                          Reference: &gt;110 × 10⁹/L. Possible causes: Hemolytic anemia, acute bleeding`;
+            } else {
+                alertClass = 'alert-danger';
+                message = `<strong>Markedly Elevated Reticulocytes (${percentage.toFixed(2)}%)</strong><br>
+                          Reference: &gt;200 × 10⁹/L. Critical - severe hemolysis or massive bleeding`;
+            }
+            
+            interpretation.className = `alert ${alertClass}`;
+            interpretation.innerHTML = message;
+        }
+        
+        function showComparisonFeedback(userRetic, userRbc, userPercentage) {
+            const reticAccuracy = Math.abs(userRetic - actualReticCount) <= 1;
+            const rbcAccuracy = Math.abs(userRbc - actualRbcCount) <= 2;
+            
+            // Add feedback to the interpretation alert
+            const interpretation = document.getElementById('interpretation');
+            let additionalFeedback = '<hr>';
+            
+            if (reticAccuracy && rbcAccuracy) {
+                additionalFeedback += '<strong>Excellent counting!</strong> Your counts are very accurate.';
+            } else {
+                additionalFeedback += '<strong>Good attempt!</strong> ';
+                if (!reticAccuracy) {
+                    additionalFeedback += `Actual reticulocytes in large square: ${actualReticCount}. `;
+                }
+                if (!rbcAccuracy) {
+                    additionalFeedback += `Actual RBCs in small square: ${actualRbcCount}.`;
+                }
+            }
+            
+            interpretation.innerHTML += additionalFeedback;
+        }
+        
+        function toggleHint() {
+            const hintDisplay = document.getElementById('hint-display');
+            
+            if (!hintDisplay && learningMode !== 'expert') {
+                showHint();
+            } else {
+                hideHint();
+            }
+        }
+        
+        function showHint() {
+            if (learningMode === 'expert') return;
+            
+            const hints = {
+                beginner: [
+                    "Look for blue cells with dark granules - these are reticulocytes!",
+                    "Count all reticulocytes in the large square area.",
+                    "Count ALL cells (including reticulocytes) in the small square.",
+                    "Remember the edge rule: don't count cells touching bottom/right edges.",
+                    "Reticulocytes have RNA granules that stain blue with NMB."
+                ],
+                intermediate: [
+                    "Apply the edge rule carefully in the small square.",
+                    "Look for subtle RNA granules in reticulocytes.",
+                    "Ensure systematic counting to avoid double-counting."
+                ]
+            };
+            
+            const modeHints = hints[learningMode] || hints.intermediate;
+            const randomHint = modeHints[Math.floor(Math.random() * modeHints.length)];
+            
+            // Display hint in the instructions area
+            const instructionsContent = document.getElementById('instructions-content');
+            const existingHint = document.getElementById('hint-display');
+            
+            if (existingHint) {
+                existingHint.remove();
+            }
+            
+            const hintDiv = document.createElement('div');
+            hintDiv.id = 'hint-display';
+            hintDiv.className = 'alert alert-info mt-3';
+            hintDiv.innerHTML = `<h6><i class="fas fa-lightbulb"></i> Hint</h6><p class="mb-0">${randomHint}</p>`;
+            instructionsContent.appendChild(hintDiv);
+            
+            document.getElementById('hint-button-text').textContent = 'Hide Hint';
+        }
+        
+        function hideHint() {
+            const hintDisplay = document.getElementById('hint-display');
+            if (hintDisplay) {
+                hintDisplay.remove();
+            }
+            document.getElementById('hint-button-text').textContent = 'Get Hint';
+        }
+        
+        // Tutorial navigation
+        document.getElementById('tutorial-next').addEventListener('click', () => {
+            if (tutorialStep < tutorialSteps.length - 1) {
+                tutorialStep++;
+                showTutorialStep();
+            } else {
+                hideTutorial();
+                setLearningMode('beginner');
+            }
+        });
+        
+        document.getElementById('tutorial-prev').addEventListener('click', () => {
+            if (tutorialStep > 0) {
+                tutorialStep--;
+                showTutorialStep();
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up responsive behavior
+            const observer = new ResizeObserver(resizeCanvas);
+            observer.observe(document.body);
+        });
+    </script>
+</body>
+</html>
