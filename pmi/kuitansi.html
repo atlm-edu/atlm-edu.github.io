@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batik Smile Receipt Maker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        
+        .receipt {
+            border: 2px solid #000;
+            padding: 20px;
+            margin-top: 20px;
+            background: white;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .header {
+            display: flex;
+            align-items: flex-start;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        
+        .logo-section {
+            flex-shrink: 0;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #000;
+        }
+        
+        .store-info {
+            flex: 1;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .address-line {
+            margin-bottom: 2px;
+        }
+        
+        .contact-info {
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        
+        .receipt-details {
+            flex-shrink: 0;
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.4;
+            min-width: 200px;
+        }
+        
+        .receipt-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .receipt-table th,
+        .receipt-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+            font-size: 12px;
+        }
+        
+        .receipt-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .number-col {
+            width: 40px;
+            text-align: center;
+        }
+        
+        .item-col {
+            width: 250px;
+        }
+        
+        .qty-col, .price-col, .total-col {
+            width: 80px;
+            text-align: right;
+        }
+        
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        
+        .signature-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .item-inputs {
+            display: grid;
+            grid-template-columns: 50px 2fr 80px 100px 100px 50px;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+        
+        .item-inputs input {
+            padding: 5px;
+            font-size: 12px;
+        }
+        
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .total-section {
+            text-align: right;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media print {
+            .form-section, .btn {
+                display: none;
+            }
+            .container {
+                box-shadow: none;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Batik Smile Receipt</h1>
+        
+        <div class="form-section">
+            <h3>Informasi Toko</h3>
+            <div class="form-group">
+                <label>Nama Toko:</label>
+                <input type="text" id="storeName" value="Batik Smile" />
+            </div>
+            <div class="form-group">
+                <label>Logo URL:</label>
+                <input type="text" id="logoUrl" value="https://scontent.fsoc2-1.fna.fbcdn.net/v/t39.30808-6/322550265_708614450608670_1314181391779623157_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHVZJ3sVrmilYbN8fhFnHtwpX3Fk3hdFuWlfcWTeF0W5baFAsPMivNgDFY2hLlq3ErWeXKrOb-ui0m3sZ191-gu&_nc_ohc=LWY9E1SBpkcQ7kNvwHhr-dx&_nc_oc=AdkPSrTmiDM2xGOIEEg5UBgq7tjGHhALBXaRS9cKbxNBq29-UxLEeYGoUjyOAhyewqn5Bo1OaIH_fKtEHtXlOHlr&_nc_zt=23&_nc_ht=scontent.fsoc2-1.fna&_nc_gid=A99QQabWUW7Lj3JRGHKChg&oh=00_AfYyl0XxsheaJq8jPAmL6I5wwbZF-pUcMDfmtIz_h_Yd8g&oe=68C42FA8" />
+            </div>
+            <div class="form-group">
+                <label>Nomor HP:</label>
+                <input type="text" id="phoneNumber" value="085 261 659 779" />
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Informasi Receipt</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nomor Receipt:</label>
+                    <input type="text" id="receiptNumber" value="019401" />
+                </div>
+                <div class="form-group">
+                    <label>Tanggal:</label>
+                    <input type="date" id="receiptDate" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Lokasi:</label>
+                    <input type="text" id="location" value="Semarang" />
+                </div>
+                <div style="display: grid; gap: 15px;">
+                    <div class="form-group">
+                        <label>Tuan:</label>
+                        <input type="text" id="tuanName" placeholder="Nama tuan/bapak/ibu" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Toko:</label>
+                    <input type="text" id="tokoName" placeholder="Nama toko customer" />
+                </div>
+                <div style="display: grid; gap: 15px;">
+                    <div class="form-group">
+                        <label>Penerima:</label>
+                        <input type="text" id="receiverName" placeholder="Nama penerima barang" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Hormat Kami:</label>
+                    <input type="text" id="senderName" placeholder="Nama pengirim/sales" />
+                </div>
+                <div></div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Item Barang</h3>
+            <div class="item-inputs">
+                <strong>No.</strong>
+                <strong>Nama Barang</strong>
+                <strong>Jumlah</strong>
+                <strong>Harga@</strong>
+                <strong>Total</strong>
+                <strong>Action</strong>
+            </div>
+            <div id="itemsList"></div>
+            <button class="btn" onclick="addItem()">+ Tambah Item</button>
+        </div>
+        
+        <button class="btn btn-success" onclick="generateReceipt()">Generate Receipt</button>
+        <button class="btn" onclick="window.print()">Print Receipt</button>
+        
+        <div id="receipt" class="receipt" style="display: none;">
+            <!-- Receipt will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        let itemCount = 0;
+        
+        // Set today's date
+        document.getElementById('receiptDate').value = new Date().toISOString().split('T')[0];
+        
+        function addItem() {
+            itemCount++;
+            const itemsList = document.getElementById('itemsList');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item-inputs';
+            itemDiv.id = `item-${itemCount}`;
+            
+            itemDiv.innerHTML = `
+                <input type="text" value="${itemCount}" readonly style="background: #f0f0f0;">
+                <input type="text" id="itemName-${itemCount}" placeholder="Nama barang">
+                <input type="number" id="itemQty-${itemCount}" placeholder="Jumlah" min="1" onchange="calculateItemTotal(${itemCount})">
+                <input type="number" id="itemPrice-${itemCount}" placeholder="Harga" min="0" onchange="calculateItemTotal(${itemCount})">
+                <input type="number" id="itemTotal-${itemCount}" placeholder="Total" readonly style="background: #f0f0f0;">
+                <button class="btn btn-danger" onclick="removeItem(${itemCount})">×</button>
+            `;
+            
+            itemsList.appendChild(itemDiv);
+        }
+        
+        function removeItem(itemId) {
+            const item = document.getElementById(`item-${itemId}`);
+            if (item) {
+                item.remove();
+            }
+            updateItemNumbers();
+        }
+        
+        function updateItemNumbers() {
+            const items = document.querySelectorAll('#itemsList .item-inputs');
+            items.forEach((item, index) => {
+                const numberInput = item.querySelector('input[readonly]');
+                if (numberInput) {
+                    numberInput.value = index + 1;
+                }
+            });
+        }
+        
+        function calculateItemTotal(itemId) {
+            const qty = parseFloat(document.getElementById(`itemQty-${itemId}`).value) || 0;
+            const price = parseFloat(document.getElementById(`itemPrice-${itemId}`).value) || 0;
+            const total = qty * price;
+            document.getElementById(`itemTotal-${itemId}`).value = total;
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID').format(amount);
+        }
+        
+        function generateReceipt() {
+            const storeName = document.getElementById('storeName').value;
+            const logoUrl = document.getElementById('logoUrl').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const receiptNumber = document.getElementById('receiptNumber').value;
+            const receiptDate = document.getElementById('receiptDate').value;
+            const location = document.getElementById('location').value;
+            const tuanName = document.getElementById('tuanName').value;
+            const tokoName = document.getElementById('tokoName').value;
+            const receiverName = document.getElementById('receiverName').value;
+            const senderName = document.getElementById('senderName').value;
+            
+            const items = document.querySelectorAll('#itemsList .item-inputs');
+            let itemsHtml = '';
+            let grandTotal = 0;
+            
+            items.forEach((item, index) => {
+                const name = item.querySelector('input[placeholder="Nama barang"]').value;
+                const qty = item.querySelector('input[placeholder="Jumlah"]').value;
+                const price = item.querySelector('input[placeholder="Harga"]').value;
+                const total = item.querySelector('input[placeholder="Total"]').value;
+                
+                if (name && qty && price) {
+                    itemsHtml += `
+                        <tr>
+                            <td class="number-col">${index + 1}</td>
+                            <td class="item-col">${name}</td>
+                            <td class="qty-col">${qty}</td>
+                            <td class="price-col">${formatCurrency(price)}</td>
+                            <td class="total-col">${formatCurrency(total)}</td>
+                        </tr>
+                    `;
+                    grandTotal += parseFloat(total);
+                }
+            });
+            
+            const receiptHtml = `
+                <div class="header">
+                    <div class="logo-section">
+                        <img src="${logoUrl}" alt="Batik Smile Logo" class="logo">
+                    </div>
+                    
+                    <div class="store-info">
+                        <div class="address-line">Jl. Sukun Raya No. 21 A Banyumanik - Semarang</div>
+                        <div class="address-line">Jl. Sukun Raya No. 23 Banyumanik - Semarang</div>
+                        <div class="address-line">Jl. Simongan Raya No. 109 Bongsari (Sampokong) Semarang</div>
+                        <div class="contact-info">Hp. ${phoneNumber}</div>
+                    </div>
+                    
+                    <div class="receipt-details">
+                        <div style="margin-top: 10px;">
+                            ${location}, ${new Date(receiptDate).toLocaleDateString('id-ID')}<br>
+                            Tuan: ${tuanName || '________________'}<br>
+                            Toko: ${tokoName || '________________'}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="receipt-info">
+                    <div>
+                        <strong>NOTA NO. BSD:</strong> ${receiptNumber}
+                    </div>
+                </div>
+                
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>KODE NAMA BARANG</th>
+                            <th>JUMLAH</th>
+                            <th>HARGA@</th>
+                            <th>TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                        <!-- Empty rows for consistent layout -->
+                        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    </tbody>
+                </table>
+                
+                <div class="footer">
+                    <div class="signature-section">
+                        Hormat Kami,<br><br><br>
+                        ${senderName || '________________'}
+                    </div>
+                    <div class="signature-section">
+                        Penerima,<br><br><br>
+                        ${receiverName || '________________'}
+                    </div>
+                    <div class="total-section">
+                        <strong>Jumlah Total: ${formatCurrency(grandTotal)}</strong>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('receipt').innerHTML = receiptHtml;
+            document.getElementById('receipt').style.display = 'block';
+            
+            // Scroll to receipt
+            document.getElementById('receipt').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Add initial item
+        addItem();
+    </script>
+</body>
+</html>
