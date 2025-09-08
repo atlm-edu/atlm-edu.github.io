@@ -10,7 +10,7 @@
             margin: 20px;
             background-color: #f5f5f5;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -19,7 +19,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
+
         .form-section {
             margin-bottom: 30px;
             padding: 20px;
@@ -27,7 +27,7 @@
             border-radius: 5px;
             background: #f9f9f9;
         }
-        
+
         .receipt {
             border: 2px solid #000;
             padding: 20px;
@@ -35,7 +35,7 @@
             background: white;
             font-family: 'Courier New', monospace;
         }
-        
+
         .header {
             display: flex;
             align-items: flex-start;
@@ -44,35 +44,35 @@
             margin-bottom: 20px;
             gap: 15px;
         }
-        
+
         .logo-section {
             flex-shrink: 0;
             text-align: center;
         }
-        
+
         .logo {
-            width: 40px;
-            height: 40px;
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid #000;
         }
-        
+
         .store-info {
             flex: 1;
             font-size: 12px;
             line-height: 1.4;
         }
-        
+
         .address-line {
             margin-bottom: 2px;
         }
-        
+
         .contact-info {
             margin-top: 8px;
             font-weight: bold;
         }
-        
+
         .receipt-details {
             flex-shrink: 0;
             text-align: right;
@@ -80,20 +80,20 @@
             line-height: 1.4;
             min-width: 200px;
         }
-        
+
         .receipt-info {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
             font-size: 14px;
         }
-        
+
         .receipt-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        
+
         .receipt-table th,
         .receipt-table td {
             border: 1px solid #000;
@@ -101,49 +101,49 @@
             text-align: left;
             font-size: 12px;
         }
-        
+
         .receipt-table th {
             background-color: #f0f0f0;
             font-weight: bold;
             text-align: center;
         }
-        
+
         .number-col {
             width: 40px;
             text-align: center;
         }
-        
+
         .item-col {
             width: 250px;
         }
-        
+
         .qty-col, .price-col, .total-col {
             width: 80px;
             text-align: right;
         }
-        
+
         .footer {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
             font-size: 12px;
         }
-        
+
         .signature-section {
             text-align: center;
             margin-top: 20px;
         }
-        
+
         .form-group {
             margin-bottom: 15px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        
+
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -152,7 +152,7 @@
             border-radius: 4px;
             font-size: 14px;
         }
-        
+
         .item-inputs {
             display: grid;
             grid-template-columns: 50px 2fr 80px 100px 100px 50px;
@@ -160,12 +160,12 @@
             margin-bottom: 10px;
             align-items: end;
         }
-        
+
         .item-inputs input {
             padding: 5px;
             font-size: 12px;
         }
-        
+
         .btn {
             background-color: #007bff;
             color: white;
@@ -176,40 +176,40 @@
             font-size: 14px;
             margin: 5px;
         }
-        
+
         .btn:hover {
             background-color: #0056b3;
         }
-        
+
         .btn-danger {
             background-color: #dc3545;
         }
-        
+
         .btn-danger:hover {
             background-color: #c82333;
         }
-        
+
         .btn-success {
             background-color: #28a745;
         }
-        
+
         .btn-success:hover {
             background-color: #218838;
         }
-        
+
         .total-section {
             text-align: right;
             font-weight: bold;
             font-size: 14px;
             margin-top: 10px;
         }
-        
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+
         @media print {
             .form-section, .btn {
                 display: none;
@@ -224,7 +224,7 @@
 <body>
     <div class="container">
         <h1>Batik Smile Receipt</h1>
-        
+
         <div class="form-section">
             <h3>Informasi Toko</h3>
             <div class="form-group">
@@ -240,7 +240,7 @@
                 <input type="text" id="phoneNumber" value="085 261 659 779" />
             </div>
         </div>
-        
+
         <div class="form-section">
             <h3>Informasi Receipt</h3>
             <div class="form-row">
@@ -285,7 +285,7 @@
                 <div></div>
             </div>
         </div>
-        
+
         <div class="form-section">
             <h3>Item Barang</h3>
             <div class="item-inputs">
@@ -299,10 +299,10 @@
             <div id="itemsList"></div>
             <button class="btn" onclick="addItem()">+ Tambah Item</button>
         </div>
-        
+
         <button class="btn btn-success" onclick="generateReceipt()">Generate Receipt</button>
         <button class="btn" onclick="window.print()">Print Receipt</button>
-        
+
         <div id="receipt" class="receipt" style="display: none;">
             <!-- Receipt will be generated here -->
         </div>
@@ -310,17 +310,17 @@
 
     <script>
         let itemCount = 0;
-        
+
         // Set today's date
         document.getElementById('receiptDate').value = new Date().toISOString().split('T')[0];
-        
+
         function addItem() {
             itemCount++;
             const itemsList = document.getElementById('itemsList');
             const itemDiv = document.createElement('div');
             itemDiv.className = 'item-inputs';
             itemDiv.id = `item-${itemCount}`;
-            
+
             itemDiv.innerHTML = `
                 <input type="text" value="${itemCount}" readonly style="background: #f0f0f0;">
                 <input type="text" id="itemName-${itemCount}" placeholder="Nama barang">
@@ -329,10 +329,10 @@
                 <input type="number" id="itemTotal-${itemCount}" placeholder="Total" readonly style="background: #f0f0f0;">
                 <button class="btn btn-danger" onclick="removeItem(${itemCount})">×</button>
             `;
-            
+
             itemsList.appendChild(itemDiv);
         }
-        
+
         function removeItem(itemId) {
             const item = document.getElementById(`item-${itemId}`);
             if (item) {
@@ -340,7 +340,7 @@
             }
             updateItemNumbers();
         }
-        
+
         function updateItemNumbers() {
             const items = document.querySelectorAll('#itemsList .item-inputs');
             items.forEach((item, index) => {
@@ -350,18 +350,18 @@
                 }
             });
         }
-        
+
         function calculateItemTotal(itemId) {
             const qty = parseFloat(document.getElementById(`itemQty-${itemId}`).value) || 0;
             const price = parseFloat(document.getElementById(`itemPrice-${itemId}`).value) || 0;
             const total = qty * price;
             document.getElementById(`itemTotal-${itemId}`).value = total;
         }
-        
+
         function formatCurrency(amount) {
             return new Intl.NumberFormat('id-ID').format(amount);
         }
-        
+
         function generateReceipt() {
             const storeName = document.getElementById('storeName').value;
             const logoUrl = document.getElementById('logoUrl').value;
@@ -373,17 +373,17 @@
             const tokoName = document.getElementById('tokoName').value;
             const receiverName = document.getElementById('receiverName').value;
             const senderName = document.getElementById('senderName').value;
-            
+
             const items = document.querySelectorAll('#itemsList .item-inputs');
             let itemsHtml = '';
             let grandTotal = 0;
-            
+
             items.forEach((item, index) => {
                 const name = item.querySelector('input[placeholder="Nama barang"]').value;
                 const qty = item.querySelector('input[placeholder="Jumlah"]').value;
                 const price = item.querySelector('input[placeholder="Harga"]').value;
                 const total = item.querySelector('input[placeholder="Total"]').value;
-                
+
                 if (name && qty && price) {
                     itemsHtml += `
                         <tr>
@@ -397,20 +397,20 @@
                     grandTotal += parseFloat(total);
                 }
             });
-            
+
             const receiptHtml = `
                 <div class="header">
                     <div class="logo-section">
                         <img src="${logoUrl}" alt="Batik Smile Logo" class="logo">
                     </div>
-                    
+
                     <div class="store-info">
                         <div class="address-line">Jl. Sukun Raya No. 21 A Banyumanik - Semarang</div>
                         <div class="address-line">Jl. Sukun Raya No. 23 Banyumanik - Semarang</div>
                         <div class="address-line">Jl. Simongan Raya No. 109 Bongsari (Sampokong) Semarang</div>
                         <div class="contact-info">Hp. ${phoneNumber}</div>
                     </div>
-                    
+
                     <div class="receipt-details">
                         <div style="margin-top: 10px;">
                             ${location}, ${new Date(receiptDate).toLocaleDateString('id-ID')}<br>
@@ -419,13 +419,13 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="receipt-info">
                     <div>
                         <strong>NOTA NO. BSD:</strong> ${receiptNumber}
                     </div>
                 </div>
-                
+
                 <table class="receipt-table">
                     <thead>
                         <tr>
@@ -444,7 +444,7 @@
                         <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     </tbody>
                 </table>
-                
+
                 <div class="footer">
                     <div class="signature-section">
                         Hormat Kami,<br><br><br>
@@ -459,14 +459,14 @@
                     </div>
                 </div>
             `;
-            
+
             document.getElementById('receipt').innerHTML = receiptHtml;
             document.getElementById('receipt').style.display = 'block';
-            
+
             // Scroll to receipt
             document.getElementById('receipt').scrollIntoView({ behavior: 'smooth' });
         }
-        
+
         // Add initial item
         addItem();
     </script>
