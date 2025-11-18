@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Mahasiswa Baru 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'navy': '#003d7a',
+                        'tni-blue': '#003d7a',
+                        'army-green': '#4a5d23',
+                        'military-gray': '#5a6c7d',
+                        'tni-gold': '#d4af37'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .slideshow-container { position: relative; }
+        .slide { display: none; animation: fadeIn 1s; }
+        .slide.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Mobile Menu Animation */
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .mobile-menu.active {
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Responsive -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0">
+                        <img alt="" border="0" data-original-height="536" data-original-width="490" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDiAlTT2XWsd-0Zr1LPtpEkWCyso1D5WCDevqL6mldFZOSEIOHoUg3BVrRIhKsXo-J3HF03pnJEXko2Dc4PGPWxI7CFl_7PrpsCNpp47hWJ-zqdajsT6HCT9fLTkbo6DyDrifMTx90wDoqu34fxWFun7SVq1R6_T1sbgQVTEGeMw0RWeeKO-ILOo4uloM/s1600/logo.png"/>
+
+                    </div>
+                    <div>
+                        <h1 class="text-sm sm:text-lg font-semibold text-navy">Akademi Kesehatan</h1>
+                        <p class="text-xs text-gray-500 hidden sm:block">dr. Soedjono</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="#beranda" class="text-gray-700 hover:text-navy transition">Beranda</a>
+                    <a href="#tentang" class="text-gray-700 hover:text-navy transition">Tentang</a>
+                    <a href="#pendaftaran" class="text-gray-700 hover:text-navy transition">Pendaftaran</a>
+                    <a href="#fasilitas" class="text-gray-700 hover:text-navy transition">Fasilitas</a>
+                </nav>
+
+                <!-- CTA Button Desktop -->
+                <button class="hidden lg:block bg-navy text-white px-6 py-2 rounded hover:bg-blue-900 transition text-sm">
+                    Daftar Sekarang
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-navy focus:outline-none">
+                    <i id="menuIcon" class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div id="mobileMenu" class="mobile-menu lg:hidden">
+                <nav class="flex flex-col space-y-4 py-4 border-t border-gray-200 mt-3">
+                    <a href="#beranda" onclick="toggleMobileMenu()" class="text-gray-700 hover:text-navy transition px-2">Beranda</a>
+                    <a href="#tentang" onclick="toggleMobileMenu()" class="text-gray-700 hover:text-navy transition px-2">Tentang</a>
+                    <a href="#pendaftaran" onclick="toggleMobileMenu()" class="text-gray-700 hover:text-navy transition px-2">Pendaftaran</a>
+                    <a href="#fasilitas" onclick="toggleMobileMenu()" class="text-gray-700 hover:text-navy transition px-2">Fasilitas</a>
+                    <button class="bg-navy text-white px-6 py-2 rounded hover:bg-blue-900 transition text-sm">
+                        Daftar Sekarang
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Slideshow Hero - Responsive -->
+    <section id="beranda" class="slideshow-container relative h-[400px] sm:h-[500px] lg:h-[600px] bg-gray-900">
+        <div class="slide active">
+            <div class="relative h-[400px] sm:h-[500px] lg:h-[600px] bg-gradient-to-r from-navy to-blue-900 flex items-center">
+                <div class="absolute inset-0 bg-black opacity-40"></div>
+                <div class="container mx-auto px-4 sm:px-6 relative z-10 text-white">
+                    <h2 class="text-2xl sm:text-4xl lg:text-5xl font-light mb-2 sm:mb-4">Membentuk Pemimpin Masa Depan</h2>
+                    <p class="text-sm sm:text-lg lg:text-xl font-light mb-4 sm:mb-8 max-w-2xl">Dengan nilai-nilai disiplin, integritas, dan dedikasi</p>
+                    <button class="bg-white text-navy px-4 sm:px-8 py-2 sm:py-3 rounded hover:bg-gray-100 transition text-sm sm:text-base">
+                        Pelajari Lebih Lanjut
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="relative h-[400px] sm:h-[500px] lg:h-[600px] bg-gradient-to-r from-blue-800 to-army-green flex items-center">
+                <div class="absolute inset-0 bg-black opacity-40"></div>
+                <div class="container mx-auto px-4 sm:px-6 relative z-10 text-white">
+                    <h2 class="text-2xl sm:text-4xl lg:text-5xl font-light mb-2 sm:mb-4">Pendidikan Berkualitas</h2>
+                    <p class="text-sm sm:text-lg lg:text-xl font-light mb-4 sm:mb-8 max-w-2xl">Dengan standar internasional dan pengalaman militer</p>
+                    <button class="bg-white text-navy px-4 sm:px-8 py-2 sm:py-3 rounded hover:bg-gray-100 transition text-sm sm:text-base">
+                        Lihat Program Studi
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="relative h-[400px] sm:h-[500px] lg:h-[600px] bg-gradient-to-r from-military-gray to-navy flex items-center">
+                <div class="absolute inset-0 bg-black opacity-40"></div>
+                <div class="container mx-auto px-4 sm:px-6 relative z-10 text-white">
+                    <h2 class="text-2xl sm:text-4xl lg:text-5xl font-light mb-2 sm:mb-4">Fasilitas Modern</h2>
+                    <p class="text-sm sm:text-lg lg:text-xl font-light mb-4 sm:mb-8 max-w-2xl">Laboratorium, perpustakaan, dan area pelatihan terkini</p>
+                    <button class="bg-white text-navy px-4 sm:px-8 py-2 sm:py-3 rounded hover:bg-gray-100 transition text-sm sm:text-base">
+                        Jelajahi Kampus
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20">
+            <button onclick="showSlide(0)" class="dot w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white opacity-50 hover:opacity-100 transition"></button>
+            <button onclick="showSlide(1)" class="dot w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white opacity-50 hover:opacity-100 transition"></button>
+            <button onclick="showSlide(2)" class="dot w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white opacity-50 hover:opacity-100 transition"></button>
+        </div>
+    </section>
+
+    <!-- Sambutan Rektor - Responsive -->
+    <section id="tentang" class="py-12 sm:py-16 lg:py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+                    <div class="order-2 md:order-1">
+                        <div class="bg-navy/10 rounded-lg px-4 sm:px-8 relative">
+
+                            <div class="">
+                                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1N-2JzMzo24bYi0TOmt_t4hOUSLQE5KcsGNvE42KAF7LAFS2P7kFCZ408IlhTiXgwKKGEuZDF1FRI4IVCNn8556dC2OOT_9zw9O7o8-DiIMkyVbO70coc9Ls3ahQW5S5HaZs139P7enh4PopUsDItmdAMT3KGHvOxQg_keNlRy8xYyeJ6ZfAClB9ZXRU/s1600/20251116_0533_Uniformed%20Woman%20Portrait_remix_01ka4ta6m5ew39adazcq67tqjz.png?w=400&h=500&fit=crop" alt="Rektor" class="w-full h-64 sm:h-80 object-cover object-top">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <p class="text-xs sm:text-sm text-navy font-semibold mb-2">SAMBUTAN DIREKTUR</p>
+                        <h3 class="text-2xl sm:text-3xl font-light text-gray-800 mb-4 sm:mb-6">Lilis Susiati, S.KM.M.Kes</h3>
+                        <p class="text-sm sm:text-base text-gray-600 leading-relaxed mb-3 sm:mb-4">
+                            "Selamat datang di Akademi Kesehatan dr. Soedjono. Kami berkomitmen untuk membentuk generasi muda yang tidak hanya cerdas secara akademis, tetapi juga memiliki karakter kuat, disiplin tinggi, dan jiwa kepemimpinan."
+                        </p>
+                        <p class="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6">
+                            "Dengan dukungan AYASAN WAHANA BHAKTI KARYA HUSADA (YWBKH), kami menyediakan pendidikan berkualitas tinggi yang memadukan ilmu pengetahuan modern dengan nilai-nilai bela negara."
+                        </p>
+                        <div class="flex items-center space-x-4">
+                            <div class="h-px bg-navy w-12 sm:w-16"></div>
+                            <p class="text-xs sm:text-sm text-gray-500">Direktur Akademi Kesehatan dr. Soedjono</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Profil - Responsive -->
+    <section class="py-12 sm:py-16 lg:py-20 bg-gray-100">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-8 sm:mb-12">
+                <p class="text-xs sm:text-sm text-navy font-semibold mb-2">VIDEO PROFIL</p>
+                <h3 class="text-2xl sm:text-3xl font-light text-gray-800">Kenali Lebih Dekat Kampus Kami</h3>
+            </div>
+            <div class="max-w-5xl mx-auto">
+                <div class="relative bg-navy/90 rounded-lg overflow-hidden shadow-2xl" style="padding-bottom: 56.25%; height: 0;">
+                    <div id="playButton" class="absolute inset-0 flex items-center justify-center cursor-pointer" onclick="playVideo()">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full flex items-center justify-center hover:scale-110 transition transform">
+                            <i class="fas fa-play text-navy text-xl sm:text-2xl ml-1"></i>
+                        </div>
+                    </div>
+                    <iframe id="videoFrame" class="absolute inset-0 w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:none;"></iframe>
+                </div>
+                <p class="text-center text-gray-600 mt-4 text-xs sm:text-sm">Tonton video profil untuk mengetahui kehidupan kampus dan program studi kami</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section - Responsive -->
+    <section class="py-12 sm:py-16 lg:py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8 sm:mb-12">
+                    <p class="text-xs sm:text-sm text-navy font-semibold mb-2">INFORMASI</p>
+                    <h3 class="text-2xl sm:text-3xl font-light text-gray-800">Unduh Dokumen Pendaftaran</h3>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="border border-gray-200 rounded-lg p-4 sm:p-6 hover:border-navy transition cursor-pointer" onclick="downloadFile('biaya')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h4 class="text-base sm:text-lg font-medium text-gray-800 mb-2">Rincian Biaya Kuliah</h4>
+                                <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Informasi lengkap biaya pendidikan tahun 2025</p>
+                                <span class="text-navy text-xs sm:text-sm font-medium">Download PDF <i class="fas fa-arrow-right ml-1"></i></span>
+                            </div>
+                            <i class="fas fa-file-pdf text-2xl sm:text-3xl text-red-500 ml-3 flex-shrink-0"></i>
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 sm:p-6 hover:border-navy transition cursor-pointer" onclick="downloadFile('brosur')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h4 class="text-base sm:text-lg font-medium text-gray-800 mb-2">Brosur Program Studi</h4>
+                                <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Panduan lengkap semua program studi</p>
+                                <span class="text-navy text-xs sm:text-sm font-medium">Download PDF <i class="fas fa-arrow-right ml-1"></i></span>
+                            </div>
+                            <i class="fas fa-file-pdf text-2xl sm:text-3xl text-red-500 ml-3 flex-shrink-0"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jalur Pendaftaran - Responsive -->
+    <section id="pendaftaran" class="py-12 sm:py-16 lg:py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10 sm:mb-16">
+                <p class="text-xs sm:text-sm text-navy font-semibold mb-2">PENDAFTARAN</p>
+                <h3 class="text-2xl sm:text-3xl font-light text-gray-800 mb-3 sm:mb-4">Pilih Jalur Pendaftaran</h3>
+                <p class="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">Kami menyediakan berbagai jalur pendaftaran sesuai dengan latar belakang dan prestasi Anda</p>
+            </div>
+
+            <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Jalur Umum -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-lg transition">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-navy/10 rounded flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-users text-navy text-lg sm:text-xl"></i>
+                    </div>
+                    <h4 class="text-lg sm:text-xl font-medium text-gray-800 mb-2">Jalur Umum</h4>
+                    <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Pendaftaran regular untuk semua calon mahasiswa</p>
+                    <ul class="space-y-2 mb-4 sm:mb-6 text-xs sm:text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-navy text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Tes akademik</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-navy text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Wawancara</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-navy text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Tes kesehatan</span>
+                        </li>
+                    </ul>
+                    <button onclick="selectJalur('umum')" class="w-full border border-navy text-navy py-2 rounded hover:bg-navy hover:text-white transition text-xs sm:text-sm">
+                        Daftar
+                    </button>
+                </div>
+
+                <!-- Jalur TNI/POLRI/PNS -->
+                <div class="bg-white border-2 border-navy rounded-lg p-4 sm:p-6 hover:shadow-lg transition relative">
+                    <div class="absolute -top-2 sm:-top-3 right-3 sm:right-4 bg-army-green text-white text-xs px-2 sm:px-3 py-1 rounded">REKOMENDASI</div>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-army-green/10 rounded flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-shield-alt text-army-green text-lg sm:text-xl"></i>
+                    </div>
+                    <h4 class="text-lg sm:text-xl font-medium text-gray-800 mb-2">TNI/POLRI/PNS</h4>
+                    <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Khusus putra-putri abdi negara</p>
+                    <ul class="space-y-2 mb-4 sm:mb-6 text-xs sm:text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-army-green text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Potongan biaya 20%</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-army-green text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Surat tugas orang tua</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-army-green text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Prioritas seleksi</span>
+                        </li>
+                    </ul>
+                    <button onclick="selectJalur('tni')" class="w-full bg-army-green text-white py-2 rounded hover:bg-green-800 transition text-xs sm:text-sm">
+                        Daftar
+                    </button>
+                </div>
+
+                <!-- Jalur Prestasi -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-lg transition">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-trophy text-yellow-600 text-lg sm:text-xl"></i>
+                    </div>
+                    <h4 class="text-lg sm:text-xl font-medium text-gray-800 mb-2">Jalur Prestasi</h4>
+                    <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Untuk siswa berprestasi</p>
+                    <ul class="space-y-2 mb-4 sm:mb-6 text-xs sm:text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-yellow-600 text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Beasiswa hingga 100%</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-yellow-600 text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Sertifikat prestasi</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-yellow-600 text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Tanpa tes tertulis</span>
+                        </li>
+                    </ul>
+                    <button onclick="selectJalur('prestasi')" class="w-full border border-navy text-navy py-2 rounded hover:bg-navy hover:text-white transition text-xs sm:text-sm">
+                        Daftar
+                    </button>
+                </div>
+
+                <!-- Jalur Beasiswa -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-lg transition">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-hand-holding-heart text-blue-600 text-lg sm:text-xl"></i>
+                    </div>
+                    <h4 class="text-lg sm:text-xl font-medium text-gray-800 mb-2">Jalur Beasiswa</h4>
+                    <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Program bantuan pendidikan</p>
+                    <ul class="space-y-2 mb-4 sm:mb-6 text-xs sm:text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Beasiswa penuh</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>SKTM diperlukan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 text-xs mr-2 mt-0.5 sm:mt-1 flex-shrink-0"></i>
+                            <span>Bantuan biaya hidup</span>
+                        </li>
+                    </ul>
+                    <button onclick="selectJalur('beasiswa')" class="w-full border border-navy text-navy py-2 rounded hover:bg-navy hover:text-white transition text-xs sm:text-sm">
+                        Daftar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Fasilitas - Responsive -->
+    <section id="fasilitas" class="py-12 sm:py-16 lg:py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10 sm:mb-16">
+                <p class="text-xs sm:text-sm text-navy font-semibold mb-2">FASILITAS</p>
+                <h3 class="text-2xl sm:text-3xl font-light text-gray-800 mb-3 sm:mb-4">Fasilitas Kampus</h3>
+                <p class="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">Dilengkapi dengan fasilitas modern untuk mendukung proses pembelajaran dan pengembangan mahasiswa</p>
+            </div>
+
+            <div class="max-w-7xl mx-auto">
+                <!-- Main Featured -->
+                <div class="mb-4 sm:mb-6">
+                    <div class="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=600&fit=crop" alt="Perpustakaan" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-4 sm:p-8 text-white">
+                                <h4 class="text-xl sm:text-2xl font-light mb-1 sm:mb-2">Perpustakaan Modern</h4>
+                                <p class="text-xs sm:text-sm text-gray-200">Koleksi lengkap buku dan jurnal internasional</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid Gallery -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+                    <div class="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=400&h=400&fit=crop" alt="Laboratorium" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-3 sm:p-4 text-white">
+                                <h5 class="font-medium text-sm sm:text-base">Laboratorium</h5>
+                                <p class="text-xs text-gray-200 hidden sm:block">Lab komputer & sains</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=400&h=400&fit=crop" alt="Lapangan" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-3 sm:p-4 text-white">
+                                <h5 class="font-medium text-sm sm:text-base">Lapangan Olahraga</h5>
+                                <p class="text-xs text-gray-200 hidden sm:block">Fasilitas olahraga lengkap</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=400&fit=crop" alt="Ruang Kelas" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-3 sm:p-4 text-white">
+                                <h5 class="font-medium text-sm sm:text-base">Ruang Kelas</h5>
+                                <p class="text-xs text-gray-200 hidden sm:block">AC & multimedia</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=400&fit=crop" alt="Auditorium" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-3 sm:p-4 text-white">
+                                <h5 class="font-medium text-sm sm:text-base">Auditorium</h5>
+                                <p class="text-xs text-gray-200 hidden sm:block">Kapasitas 500 orang</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer - Responsive -->
+    <footer class="bg-navy text-white py-8 sm:py-12">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                <!-- Kolom 1: Logo Yayasan & Universitas -->
+                <div>
+                    <div class="flex items-center space-x-4 mb-4">
+                        <!-- Logo Yayasan TNI -->
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center backdrop-blur-sm flex-shrink-0">
+                            <img alt="" border="0" data-original-height="489" data-original-width="510" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg2GyFf0h6PE4hG5ne1TVPVhqyQP4vvannddROkgNh1qXI6-fB2obUtN21ovsDnUC6CuDK6qH44ZnV9-WrJWQ9YiMksIkdz24ShgA2XfxsnWMrfe1l4fybCwuYXvqr6aczmdXyE8R4H9VTBC58768eD341dqpzmhG_YDL6TgjnzxpHVmE8acXRF2ylwfJI/s1600/download-logo-kesdam-56-removebg-preview.png"/>
+                        </div>
+                        <!-- Logo Universitas -->
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shadow-lg flex-shrink-0">
+                            <img alt="" border="0" data-original-height="536" data-original-width="490" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDiAlTT2XWsd-0Zr1LPtpEkWCyso1D5WCDevqL6mldFZOSEIOHoUg3BVrRIhKsXo-J3HF03pnJEXko2Dc4PGPWxI7CFl_7PrpsCNpp47hWJ-zqdajsT6HCT9fLTkbo6DyDrifMTx90wDoqu34fxWFun7SVq1R6_T1sbgQVTEGeMw0RWeeKO-ILOo4uloM/s1600/logo.png"/>
+                        </div>
+                    </div>
+                    <h4 class="font-medium mb-2 text-base sm:text-lg">Akademi Kesehatan dr. Soedjono</h4>
+                    <p class="text-xs sm:text-sm text-gray-300">Di bawah naungan Yayasan YWBKH, membentuk generasi unggul dengan karakter kuat.</p>
+                </div>
+
+                <!-- Kolom 2: Kontak -->
+                <div>
+                    <h4 class="font-medium mb-3 sm:mb-4 text-base sm:text-lg">Kontak</h4>
+                    <p class="text-xs sm:text-sm text-gray-300 mb-2"><i class="fas fa-phone mr-2"></i>+6282227348778</p>
+                    <p class="text-xs sm:text-sm text-gray-300 mb-2"><i class="fas fa-envelope mr-2"></i>akkes.drsoedjono@gmail.com</p>
+                    <p class="text-xs sm:text-sm text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i>Magelang, Jawa Tengah</p>
+                </div>
+
+                <!-- Kolom 3: Link Cepat -->
+                <div>
+                    <h4 class="font-medium mb-3 sm:mb-4 text-base sm:text-lg">Link Cepat</h4>
+                    <ul class="space-y-2 text-xs sm:text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-white transition">Program Studi</a></li>
+                        <li><a href="#" class="hover:text-white transition">Beasiswa</a></li>
+                        <li><a href="#" class="hover:text-white transition">Akademik</a></li>
+                        <li><a href="#" class="hover:text-white transition">Kemahasiswaan</a></li>
+                    </ul>
+                </div>
+
+                <!-- Kolom 4: Social Media -->
+                <div>
+                    <h4 class="font-medium mb-3 sm:mb-4 text-base sm:text-lg">Social Media</h4>
+                    <div class="flex space-x-3 sm:space-x-4">
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 border border-white/30 rounded flex items-center justify-center hover:bg-white hover:text-navy transition">
+                            <i class="fab fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 border border-white/30 rounded flex items-center justify-center hover:bg-white hover:text-navy transition">
+                            <i class="fab fa-instagram text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 border border-white/30 rounded flex items-center justify-center hover:bg-white hover:text-navy transition">
+                            <i class="fab fa-youtube text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 border border-white/30 rounded flex items-center justify-center hover:bg-white hover:text-navy transition">
+                            <i class="fab fa-whatsapp text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/20 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-300">
+                <p>&copy; 2025 Akademii Kesehatan dr. Soedjono. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal - Responsive -->
+    <div id="modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm px-4">
+        <div class="bg-white rounded-lg p-6 sm:p-8 max-w-md w-full">
+            <h3 class="text-xl sm:text-2xl font-light text-gray-800 mb-3 sm:mb-4" id="modalTitle">Pendaftaran</h3>
+            <p class="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6" id="modalText">Anda akan diarahkan ke form pendaftaran...</p>
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                <button onclick="closeModal()" class="flex-1 border border-gray-300 text-gray-700 py-2 rounded hover:bg-gray-50 transition text-sm sm:text-base">
+                    Batal
+                </button>
+                <button onclick="confirmDaftar()" class="flex-1 bg-navy text-white py-2 rounded hover:bg-blue-900 transition text-sm sm:text-base">
+                    Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = document.getElementById('menuIcon');
+
+            if (mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            } else {
+                mobileMenu.classList.add('active');
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            }
+        }
+
+        // Slideshow
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('opacity-100');
+            dots[currentSlide].classList.add('opacity-50');
+
+            currentSlide = n;
+            if (currentSlide >= slides.length) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = slides.length - 1;
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.remove('opacity-50');
+            dots[currentSlide].classList.add('opacity-100');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        // Auto slide every 5 seconds
+        setInterval(nextSlide, 5000);
+
+        // Initialize first dot
+        dots[0].classList.add('opacity-100');
+
+        // Video Player
+        function playVideo() {
+            const videoFrame = document.getElementById('videoFrame');
+            const playButton = document.getElementById('playButton');
+            videoFrame.src = 'https://www.youtube.com/embed/3mmbaP7dY_U?autoplay=1';
+            videoFrame.style.display = 'block';
+            playButton.style.display = 'none';
+        }
+
+        // Download Files
+        function downloadFile(type) {
+            const messages = {
+                'biaya': 'https://drive.google.com/file/d/1CeI3xAgsus-2sTHYXyep8ArA1g-aL6S9/view?usp=sharing',
+                'brosur': 'https://drive.google.com/file/d/1vVl97qYBzY6GMrwBd9KwlJj4oiT38p8t/view?usp=sharing'
+            };
+            alert(messages[type] + '\n\nCatatan: Ini adalah demo, file PDF belum tersedia.');
+        }
+
+        // Modal Functions
+        let selectedJalur = '';
+
+        function selectJalur(jalur) {
+            selectedJalur = jalur;
+            const titles = {
+                'umum': 'Jalur Umum',
+                'tni': 'Jalur TNI/POLRI/PNS',
+                'prestasi': 'Jalur Prestasi',
+                'beasiswa': 'Jalur Beasiswa'
+            };
+
+            document.getElementById('modalTitle').textContent = titles[jalur];
+            document.getElementById('modalText').textContent = 'Anda akan mendaftar melalui ' + titles[jalur] + '. Pastikan dokumen persyaratan sudah lengkap.';
+
+            const modal = document.getElementById('modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmDaftar() {
+            alert('Terima kasih! Anda akan diarahkan ke halaman form pendaftaran.\n\nJalur: ' + selectedJalur.toUpperCase());
+            closeModal();
+        }
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+                // Close mobile menu if open
+                const mobileMenu = document.getElementById('mobileMenu');
+                if (mobileMenu.classList.contains('active')) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuButton = event.target.closest('button');
+
+            if (mobileMenu.classList.contains('active') && !mobileMenu.contains(event.target) && !menuButton) {
+                toggleMobileMenu();
+            }
+        });
+    </script>
+</body>
+</html>
+                
